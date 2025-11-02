@@ -1,0 +1,229 @@
+{
+  "vegetables": [
+    {
+      "id": 1,
+      "name": "Tomato",
+      "category": "Fruit Vegetable",
+      "price": 40,
+      "unit": "kg",
+      "organic": true,
+      "freshness": "Farm Fresh",
+      "origin": "Local Farm",
+      "availability": "In Stock",
+      "image": "/images/vegetables.png",
+      "description": "Fresh, juicy tomatoes perfect for salads and cooking",
+      "nutritionalInfo": {
+        "calories": "18 per 100g",
+        "vitamins": ["Vitamin C", "Vitamin K", "Vitamin A"],
+        "minerals": ["Potassium", "Folate"]
+      },
+      "harvestDate": "2024-01-15",
+      "shelfLife": "5-7 days"
+    },
+    {
+      "id": 2,
+      "name": "Potato",
+      "category": "Root Vegetable",
+      "price": 30,
+      "unit": "kg",
+      "organic": false,
+      "freshness": "Fresh",
+      "origin": "Punjab",
+      "availability": "In Stock",
+      "image": "/images/vegetables.png",
+      "description": "Premium quality potatoes suitable for all cooking methods",
+      "nutritionalInfo": {
+        "calories": "77 per 100g",
+        "vitamins": ["Vitamin C", "Vitamin B6"],
+        "minerals": ["Potassium", "Manganese"]
+      },
+      "harvestDate": "2024-01-10",
+      "shelfLife": "2-3 weeks"
+    },
+    {
+      "id": 3,
+      "name": "Onion",
+      "category": "Bulb Vegetable",
+      "price": 35,
+      "unit": "kg",
+      "organic": true,
+      "freshness": "Farm Fresh",
+      "origin": "Maharashtra",
+      "availability": "In Stock",
+      "image": "/images/vegetables.png",
+      "description": "Red onions with strong flavor, perfect for Indian cooking",
+      "nutritionalInfo": {
+        "calories": "40 per 100g",
+        "vitamins": ["Vitamin C", "Vitamin B6"],
+        "minerals": ["Chromium", "Quercetin"]
+      },
+      "harvestDate": "2024-01-12",
+      "shelfLife": "3-4 weeks"
+    },
+    {
+      "id": 4,
+      "name": "Carrot",
+      "category": "Root Vegetable",
+      "price": 45,
+      "unit": "kg",
+      "organic": true,
+      "freshness": "Farm Fresh",
+      "origin": "Local Farm",
+      "availability": "In Stock",
+      "image": "/images/vegetables.png",
+      "description": "Sweet and crunchy orange carrots, rich in beta-carotene",
+      "nutritionalInfo": {
+        "calories": "41 per 100g",
+        "vitamins": ["Vitamin A", "Vitamin K", "Vitamin C"],
+        "minerals": ["Potassium", "Fiber"]
+      },
+      "harvestDate": "2024-01-14",
+      "shelfLife": "2-3 weeks"
+    },
+    {
+      "id": 5,
+      "name": "Spinach",
+      "category": "Leafy Green",
+      "price": 25,
+      "unit": "bunch",
+      "organic": true,
+      "freshness": "Farm Fresh",
+      "origin": "Local Farm",
+      "availability": "In Stock",
+      "image": "/images/vegetables.png",
+      "description": "Fresh green spinach leaves, packed with iron and nutrients",
+      "nutritionalInfo": {
+        "calories": "23 per 100g",
+        "vitamins": ["Vitamin K", "Vitamin A", "Folate"],
+        "minerals": ["Iron", "Calcium", "Magnesium"]
+      },
+      "harvestDate": "2024-01-15",
+      "shelfLife": "3-4 days"
+    },
+    {
+      "id": 6,
+      "name": "Cauliflower",
+      "category": "Flower Vegetable",
+      "price": 50,
+      "unit": "piece",
+      "organic": false,
+      "freshness": "Fresh",
+      "origin": "Haryana",
+      "availability": "In Stock",
+      "image": "/images/vegetables.png",
+      "description": "White, firm cauliflower heads perfect for curries and stir-fries",
+      "nutritionalInfo": {
+        "calories": "25 per 100g",
+        "vitamins": ["Vitamin C", "Vitamin K", "Vitamin B6"],
+        "minerals": ["Folate", "Potassium"]
+      },
+      "harvestDate": "2024-01-13",
+      "shelfLife": "1 week"
+    },
+    {
+      "id": 7,
+      "name": "Capsicum",
+      "category": "Fruit Vegetable",
+      "price": 60,
+      "unit": "kg",
+      "organic": true,
+      "freshness": "Farm Fresh",
+      "origin": "Karnataka",
+      "availability": "In Stock",
+      "image": "/images/vegetables.png",
+      "description": "Colorful bell peppers - red, yellow, and green varieties",
+      "nutritionalInfo": {
+        "calories": "31 per 100g",
+        "vitamins": ["Vitamin C", "Vitamin A", "Vitamin B6"],
+        "minerals": ["Potassium", "Folate"]
+      },
+      "harvestDate": "2024-01-14",
+      "shelfLife": "1 week"
+    },
+    {
+      "id": 8,
+      "name": "Brinjal",
+      "category": "Fruit Vegetable",
+      "price": 35,
+      "unit": "kg",
+      "organic": false,
+      "freshness": "Fresh",
+      "origin": "Local Farm",
+      "availability": "In Stock",
+      "image": "/images/vegetables.png",
+      "description": "Purple eggplants, ideal for traditional Indian dishes",
+      "nutritionalInfo": {
+        "calories": "25 per 100g",
+        "vitamins": ["Vitamin B1", "Vitamin B6", "Vitamin K"],
+        "minerals": ["Potassium", "Manganese", "Fiber"]
+      },
+      "harvestDate": "2024-01-13",
+      "shelfLife": "5-7 days"
+    },
+    {
+      "id": 9,
+      "name": "Lady Finger",
+      "category": "Pod Vegetable",
+      "price": 40,
+      "unit": "kg",
+      "organic": true,
+      "freshness": "Farm Fresh",
+      "origin": "Gujarat",
+      "availability": "In Stock",
+      "image": "/images/vegetables.png",
+      "description": "Tender okra pods, perfect for bhindi masala",
+      "nutritionalInfo": {
+        "calories": "33 per 100g",
+        "vitamins": ["Vitamin C", "Vitamin K", "Folate"],
+        "minerals": ["Magnesium", "Potassium", "Fiber"]
+      },
+      "harvestDate": "2024-01-15",
+      "shelfLife": "3-4 days"
+    },
+    {
+      "id": 10,
+      "name": "Cucumber",
+      "category": "Fruit Vegetable",
+      "price": 30,
+      "unit": "kg",
+      "organic": true,
+      "freshness": "Farm Fresh",
+      "origin": "Local Farm",
+      "availability": "In Stock",
+      "image": "/images/vegetables.png",
+      "description": "Crisp and refreshing cucumbers, great for salads",
+      "nutritionalInfo": {
+        "calories": "16 per 100g",
+        "vitamins": ["Vitamin K", "Vitamin C"],
+        "minerals": ["Potassium", "Magnesium", "Silica"]
+      },
+      "harvestDate": "2024-01-14",
+      "shelfLife": "1 week"
+    }
+  ],
+  "categories": [
+    {"id": 1, "name": "Leafy Greens", "icon": "🥬"},
+    {"id": 2, "name": "Root Vegetables", "icon": "🥕"},
+    {"id": 3, "name": "Fruit Vegetables", "icon": "🍅"},
+    {"id": 4, "name": "Pod Vegetables", "icon": "🫛"},
+    {"id": 5, "name": "Bulb Vegetables", "icon": "🧅"},
+    {"id": 6, "name": "Flower Vegetables", "icon": "🥦"}
+  ],
+  "deliveryOptions": [
+    {
+      "type": "Standard",
+      "time": "2-3 days",
+      "cost": 50
+    },
+    {
+      "type": "Express",
+      "time": "Same day",
+      "cost": 100
+    },
+    {
+      "type": "Scheduled",
+      "time": "Choose date",
+      "cost": 75
+    }
+  ]
+}

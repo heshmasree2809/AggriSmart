@@ -1,0 +1,44 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "John Farmer",
+      "email": "john@example.com",
+      "password": "password123",
+      "phone": "+91 9876543210",
+      "location": "Punjab",
+      "farmSize": "5 hectares",
+      "crops": ["Wheat", "Rice", "Cotton"],
+      "joinedDate": "2023-01-15",
+      "verified": true,
+      "profileImage": "/images/user.png"
+    },
+    {
+      "id": 2,
+      "name": "Demo User",
+      "email": "demo@agrismart.com",
+      "password": "demo123",
+      "phone": "+91 9876543211",
+      "location": "Haryana",
+      "farmSize": "3 hectares",
+      "crops": ["Wheat", "Mustard", "Vegetables"],
+      "joinedDate": "2023-06-20",
+      "verified": true,
+      "profileImage": "/images/user.png"
+    },
+    {
+      "id": 3,
+      "name": "Test User",
+      "email": "test@test.com",
+      "password": "test123",
+      "phone": "+91 9876543212",
+      "location": "Maharashtra",
+      "farmSize": "10 hectares",
+      "crops": ["Sugarcane", "Cotton", "Soybean"],
+      "joinedDate": "2023-09-10",
+      "verified": false,
+      "profileImage": "/images/user.png"
+    }
+  ],
+  "sessions": []
+}

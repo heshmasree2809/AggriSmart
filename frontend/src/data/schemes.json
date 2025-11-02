@@ -1,0 +1,169 @@
+{
+  "governmentSchemes": [
+    {
+      "id": 1,
+      "schemeName": "PM-KISAN",
+      "fullName": "Pradhan Mantri Kisan Samman Nidhi",
+      "description": "Direct income support of ₹6,000 per year to small and marginal farmers",
+      "benefits": [
+        "₹6,000 per year in three installments",
+        "Direct benefit transfer to bank account",
+        "No middlemen involved",
+        "Support for agricultural inputs"
+      ],
+      "eligibility": [
+        "Small and marginal farmers",
+        "Land holding up to 2 hectares",
+        "Valid Aadhaar card",
+        "Bank account linked with Aadhaar"
+      ],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Land ownership papers",
+        "Bank account details",
+        "Mobile number"
+      ],
+      "applicationProcess": "Online through PM-KISAN portal or CSC centers",
+      "status": "Active",
+      "lastDate": "Ongoing",
+      "officialLink": "https://pmkisan.gov.in"
+    },
+    {
+      "id": 2,
+      "schemeName": "PM Fasal Bima Yojana",
+      "fullName": "Pradhan Mantri Fasal Bima Yojana",
+      "description": "Crop insurance scheme providing financial support in case of crop failure",
+      "benefits": [
+        "Insurance coverage for crops",
+        "Premium: 2% for Kharif, 1.5% for Rabi",
+        "Coverage for natural calamities",
+        "Post-harvest losses covered"
+      ],
+      "eligibility": [
+        "All farmers including sharecroppers",
+        "Compulsory for loanee farmers",
+        "Optional for non-loanee farmers"
+      ],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Land records",
+        "Bank passbook",
+        "Crop sowing certificate"
+      ],
+      "applicationProcess": "Through banks, CSC, or online portal",
+      "status": "Active",
+      "lastDate": "Before sowing season",
+      "officialLink": "https://pmfby.gov.in"
+    },
+    {
+      "id": 3,
+      "schemeName": "Soil Health Card Scheme",
+      "fullName": "Soil Health Card Scheme",
+      "description": "Provides soil health cards to farmers with crop-wise fertilizer recommendations",
+      "benefits": [
+        "Free soil testing",
+        "Customized fertilizer recommendations",
+        "Improved soil fertility",
+        "Reduced input costs"
+      ],
+      "eligibility": [
+        "All farmers",
+        "Land ownership not mandatory"
+      ],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Land details"
+      ],
+      "applicationProcess": "Contact nearest soil testing lab or agriculture office",
+      "status": "Active",
+      "lastDate": "Ongoing",
+      "officialLink": "https://soilhealth.dac.gov.in"
+    },
+    {
+      "id": 4,
+      "schemeName": "Kisan Credit Card",
+      "fullName": "Kisan Credit Card Scheme",
+      "description": "Credit facility for farmers for agricultural and allied activities",
+      "benefits": [
+        "Credit limit up to ₹3 lakhs",
+        "Interest rate: 7% (4% after subsidy)",
+        "Flexible repayment options",
+        "Personal accident insurance"
+      ],
+      "eligibility": [
+        "All farmers - individual/joint borrowers",
+        "Tenant farmers, oral lessees, sharecroppers",
+        "SHGs or joint liability groups"
+      ],
+      "documentsRequired": [
+        "Application form",
+        "Identity proof",
+        "Address proof",
+        "Land documents",
+        "Passport size photograph"
+      ],
+      "applicationProcess": "Apply at any nationalized bank",
+      "status": "Active",
+      "lastDate": "Ongoing",
+      "officialLink": "https://www.pmkisan.gov.in"
+    },
+    {
+      "id": 5,
+      "schemeName": "PM KUSUM",
+      "fullName": "Pradhan Mantri Kisan Urja Suraksha evam Utthaan Mahabhiyan",
+      "description": "Solar pump sets and grid connected solar power plants for farmers",
+      "benefits": [
+        "60% subsidy on solar pumps",
+        "Sell excess solar power to grid",
+        "Reduced electricity bills",
+        "Additional income source"
+      ],
+      "eligibility": [
+        "Individual farmers",
+        "Group of farmers",
+        "FPO/Cooperatives",
+        "Panchayats"
+      ],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Land ownership documents",
+        "Bank account",
+        "No dues certificate from DISCOM"
+      ],
+      "applicationProcess": "Apply through state nodal agencies",
+      "status": "Active",
+      "lastDate": "Check state portal",
+      "officialLink": "https://www.mnre.gov.in"
+    }
+  ],
+  "stateSchemes": [
+    {
+      "id": 1,
+      "state": "Punjab",
+      "schemes": [
+        {
+          "name": "Punjab Farm Debt Waiver Scheme",
+          "benefit": "Debt waiver up to ₹2 lakhs for small farmers"
+        },
+        {
+          "name": "Free Electricity for Agriculture",
+          "benefit": "Free power supply for agricultural pump sets"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "state": "Maharashtra",
+      "schemes": [
+        {
+          "name": "Namo Shetkari Mahasanman Nidhi",
+          "benefit": "₹6,000 annual support to farmers"
+        },
+        {
+          "name": "Jalyukt Shivar Abhiyan",
+          "benefit": "Water conservation and drought mitigation"
+        }
+      ]
+    }
+  ]
+}

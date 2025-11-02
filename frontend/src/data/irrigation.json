@@ -1,0 +1,169 @@
+{
+  "irrigationMethods": [
+    {
+      "id": 1,
+      "method": "Drip Irrigation",
+      "description": "Water is delivered directly to plant roots through a network of pipes and emitters",
+      "efficiency": "90-95%",
+      "suitableCrops": ["Vegetables", "Fruits", "Cotton", "Sugarcane"],
+      "advantages": [
+        "Highest water efficiency",
+        "Reduced weed growth",
+        "Fertilizer can be applied through system",
+        "Suitable for all soil types",
+        "Prevents soil erosion"
+      ],
+      "disadvantages": [
+        "High initial cost",
+        "Clogging of emitters",
+        "Requires filtered water",
+        "Regular maintenance needed"
+      ],
+      "cost": "₹50,000 - ₹100,000 per hectare",
+      "waterSaving": "50-70% compared to flood irrigation",
+      "subsidy": "45-90% subsidy available under PMKSY",
+      "image": "/images/irrigation.png"
+    },
+    {
+      "id": 2,
+      "method": "Sprinkler Irrigation",
+      "description": "Water is sprayed into the air and falls on plants like rainfall",
+      "efficiency": "75-85%",
+      "suitableCrops": ["Wheat", "Gram", "Pulses", "Vegetables", "Tea", "Coffee"],
+      "advantages": [
+        "Suitable for undulating land",
+        "No land leveling required",
+        "Covers large area",
+        "Can be portable",
+        "Helps in frost protection"
+      ],
+      "disadvantages": [
+        "High energy requirement",
+        "Wind affects distribution",
+        "Not suitable for tall crops",
+        "Disease spread in humid conditions"
+      ],
+      "cost": "₹30,000 - ₹50,000 per hectare",
+      "waterSaving": "30-50% compared to flood irrigation",
+      "subsidy": "45-90% subsidy available under PMKSY",
+      "image": "/images/irrigation.png"
+    },
+    {
+      "id": 3,
+      "method": "Surface Irrigation",
+      "description": "Water is distributed over the field by gravity flow",
+      "efficiency": "40-60%",
+      "suitableCrops": ["Rice", "Wheat", "Sugarcane"],
+      "advantages": [
+        "Low initial cost",
+        "Simple operation",
+        "No special equipment needed",
+        "Suitable for closely growing crops"
+      ],
+      "disadvantages": [
+        "High water loss",
+        "Requires level land",
+        "Labor intensive",
+        "Waterlogging risk",
+        "Uneven water distribution"
+      ],
+      "cost": "₹5,000 - ₹10,000 per hectare",
+      "waterSaving": "Baseline method",
+      "subsidy": "Limited subsidy available",
+      "image": "/images/irrigation.png"
+    }
+  ],
+  "irrigationSchedule": [
+    {
+      "crop": "Wheat",
+      "criticalStages": [
+        {
+          "stage": "Crown Root Initiation",
+          "daysAfterSowing": "21-25",
+          "waterRequirement": "60 mm"
+        },
+        {
+          "stage": "Tillering",
+          "daysAfterSowing": "45-50",
+          "waterRequirement": "60 mm"
+        },
+        {
+          "stage": "Jointing",
+          "daysAfterSowing": "60-70",
+          "waterRequirement": "60 mm"
+        },
+        {
+          "stage": "Flowering",
+          "daysAfterSowing": "80-90",
+          "waterRequirement": "60 mm"
+        },
+        {
+          "stage": "Grain Filling",
+          "daysAfterSowing": "100-110",
+          "waterRequirement": "60 mm"
+        }
+      ],
+      "totalWaterRequirement": "450-650 mm",
+      "frequency": "15-20 days interval"
+    },
+    {
+      "crop": "Rice",
+      "criticalStages": [
+        {
+          "stage": "Nursery",
+          "daysAfterSowing": "0-25",
+          "waterRequirement": "150 mm"
+        },
+        {
+          "stage": "Transplanting",
+          "daysAfterSowing": "25-30",
+          "waterRequirement": "200 mm"
+        },
+        {
+          "stage": "Tillering",
+          "daysAfterSowing": "30-60",
+          "waterRequirement": "300 mm"
+        },
+        {
+          "stage": "Panicle Initiation",
+          "daysAfterSowing": "60-80",
+          "waterRequirement": "350 mm"
+        },
+        {
+          "stage": "Flowering to Maturity",
+          "daysAfterSowing": "80-120",
+          "waterRequirement": "400 mm"
+        }
+      ],
+      "totalWaterRequirement": "1200-1400 mm",
+      "frequency": "Continuous flooding or AWD"
+    }
+  ],
+  "waterManagementTips": [
+    {
+      "id": 1,
+      "tip": "Check soil moisture before irrigation",
+      "description": "Use moisture meter or feel method to determine irrigation need"
+    },
+    {
+      "id": 2,
+      "tip": "Mulching",
+      "description": "Use organic or plastic mulch to reduce evaporation"
+    },
+    {
+      "id": 3,
+      "tip": "Irrigation timing",
+      "description": "Irrigate during early morning or late evening to minimize evaporation"
+    },
+    {
+      "id": 4,
+      "tip": "Laser land leveling",
+      "description": "Ensures uniform water distribution and saves 25-30% water"
+    },
+    {
+      "id": 5,
+      "tip": "Crop rotation",
+      "description": "Rotate water-intensive crops with drought-tolerant ones"
+    }
+  ]
+}

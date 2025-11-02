@@ -1,0 +1,94 @@
+{
+  "fertilizers": [
+    {
+      "id": 1,
+      "name": "Urea",
+      "type": "Nitrogenous",
+      "composition": "46% Nitrogen",
+      "application": "Broadcast or band placement",
+      "dosage": "240 kg/hectare for wheat, 120 kg/hectare for pulses",
+      "price": 266.50,
+      "priceUnit": "per 45kg bag",
+      "benefits": ["Promotes vegetative growth", "Enhances protein synthesis", "Improves crop yield"],
+      "precautions": ["Avoid excess application", "Don't apply during rain", "Store in dry place"],
+      "suitableCrops": ["Wheat", "Rice", "Maize", "Sugarcane"],
+      "image": "/images/fertilizer.png"
+    },
+    {
+      "id": 2,
+      "name": "DAP (Diammonium Phosphate)",
+      "type": "Phosphatic",
+      "composition": "18% N, 46% P2O5",
+      "application": "Basal application",
+      "dosage": "100-150 kg/hectare",
+      "price": 1350,
+      "priceUnit": "per 50kg bag",
+      "benefits": ["Root development", "Early crop maturity", "Improves grain quality"],
+      "precautions": ["Apply at sowing time", "Mix well with soil", "Keep away from seeds"],
+      "suitableCrops": ["All crops"],
+      "image": "/images/fertilizer.png"
+    },
+    {
+      "id": 3,
+      "name": "MOP (Muriate of Potash)",
+      "type": "Potassic",
+      "composition": "60% K2O",
+      "application": "Broadcasting",
+      "dosage": "40-60 kg/hectare",
+      "price": 1700,
+      "priceUnit": "per 50kg bag",
+      "benefits": ["Disease resistance", "Improves fruit quality", "Enhances drought tolerance"],
+      "precautions": ["Not suitable for chloride sensitive crops", "Apply before planting"],
+      "suitableCrops": ["Fruits", "Vegetables", "Cotton"],
+      "image": "/images/fertilizer.png"
+    },
+    {
+      "id": 4,
+      "name": "NPK (10:26:26)",
+      "type": "Complex",
+      "composition": "10% N, 26% P2O5, 26% K2O",
+      "application": "Basal or top dressing",
+      "dosage": "200-300 kg/hectare",
+      "price": 1470,
+      "priceUnit": "per 50kg bag",
+      "benefits": ["Balanced nutrition", "Suitable for all crops", "Improves overall growth"],
+      "precautions": ["Calculate based on soil test", "Apply in splits for better efficiency"],
+      "suitableCrops": ["All crops"],
+      "image": "/images/fertilizer.png"
+    },
+    {
+      "id": 5,
+      "name": "Zinc Sulphate",
+      "type": "Micronutrient",
+      "composition": "21% Zinc, 10% Sulphur",
+      "application": "Soil or foliar application",
+      "dosage": "25 kg/hectare (soil), 0.5% solution (foliar)",
+      "price": 120,
+      "priceUnit": "per kg",
+      "benefits": ["Prevents zinc deficiency", "Improves grain zinc content", "Enhances enzyme activity"],
+      "precautions": ["Don't mix with phosphatic fertilizers", "Apply based on soil test"],
+      "suitableCrops": ["Rice", "Wheat", "Maize", "Cotton"],
+      "image": "/images/fertilizer.png"
+    }
+  ],
+  "organicFertilizers": [
+    {
+      "id": 1,
+      "name": "Vermicompost",
+      "composition": "1.5% N, 0.7% P, 1.3% K",
+      "application": "2-3 tons/hectare",
+      "benefits": ["Improves soil structure", "Enhances water retention", "Eco-friendly"],
+      "price": 8,
+      "priceUnit": "per kg"
+    },
+    {
+      "id": 2,
+      "name": "FYM (Farm Yard Manure)",
+      "composition": "0.5% N, 0.2% P, 0.5% K",
+      "application": "10-20 tons/hectare",
+      "benefits": ["Adds organic matter", "Improves soil fertility", "Cost-effective"],
+      "price": 2,
+      "priceUnit": "per kg"
+    }
+  ]
+}

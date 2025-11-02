@@ -1,0 +1,148 @@
+{
+  "currentWeather": {
+    "location": "New Delhi",
+    "temperature": 25,
+    "unit": "celsius",
+    "condition": "Clear",
+    "humidity": 65,
+    "windSpeed": 12,
+    "windDirection": "NW",
+    "pressure": 1013,
+    "visibility": 10,
+    "uvIndex": 6,
+    "feelsLike": 27,
+    "sunrise": "06:45",
+    "sunset": "18:30",
+    "lastUpdated": "2024-01-15T10:00:00Z"
+  },
+  "forecast": [
+    {
+      "date": "2024-01-16",
+      "day": "Tuesday",
+      "high": 28,
+      "low": 18,
+      "condition": "Partly Cloudy",
+      "humidity": 60,
+      "rainChance": 10,
+      "windSpeed": 15,
+      "icon": "☁️",
+      "agricultural": {
+        "spraying": "Good",
+        "irrigation": "Not needed",
+        "harvesting": "Excellent",
+        "fieldWork": "Good"
+      }
+    },
+    {
+      "date": "2024-01-17",
+      "day": "Wednesday",
+      "high": 27,
+      "low": 17,
+      "condition": "Sunny",
+      "humidity": 55,
+      "rainChance": 0,
+      "windSpeed": 10,
+      "icon": "☀️",
+      "agricultural": {
+        "spraying": "Excellent",
+        "irrigation": "Recommended",
+        "harvesting": "Excellent",
+        "fieldWork": "Excellent"
+      }
+    },
+    {
+      "date": "2024-01-18",
+      "day": "Thursday",
+      "high": 26,
+      "low": 19,
+      "condition": "Light Rain",
+      "humidity": 75,
+      "rainChance": 60,
+      "windSpeed": 20,
+      "icon": "🌧️",
+      "agricultural": {
+        "spraying": "Poor",
+        "irrigation": "Not needed",
+        "harvesting": "Poor",
+        "fieldWork": "Limited"
+      }
+    },
+    {
+      "date": "2024-01-19",
+      "day": "Friday",
+      "high": 24,
+      "low": 16,
+      "condition": "Cloudy",
+      "humidity": 70,
+      "rainChance": 30,
+      "windSpeed": 18,
+      "icon": "☁️",
+      "agricultural": {
+        "spraying": "Moderate",
+        "irrigation": "Check soil",
+        "harvesting": "Good",
+        "fieldWork": "Good"
+      }
+    },
+    {
+      "date": "2024-01-20",
+      "day": "Saturday",
+      "high": 29,
+      "low": 18,
+      "condition": "Sunny",
+      "humidity": 50,
+      "rainChance": 0,
+      "windSpeed": 12,
+      "icon": "☀️",
+      "agricultural": {
+        "spraying": "Excellent",
+        "irrigation": "Recommended",
+        "harvesting": "Excellent",
+        "fieldWork": "Excellent"
+      }
+    }
+  ],
+  "alerts": [
+    {
+      "type": "advisory",
+      "severity": "low",
+      "title": "Mild Temperature Drop Expected",
+      "description": "Temperatures may drop 2-3 degrees over the weekend. Consider protecting sensitive crops.",
+      "startTime": "2024-01-18T00:00:00Z",
+      "endTime": "2024-01-19T23:59:59Z"
+    }
+  ],
+  "historicalData": {
+    "lastWeek": {
+      "avgTemp": 24,
+      "totalRainfall": 5,
+      "avgHumidity": 62,
+      "sunnyDays": 5,
+      "rainyDays": 2
+    },
+    "lastMonth": {
+      "avgTemp": 22,
+      "totalRainfall": 25,
+      "avgHumidity": 65,
+      "sunnyDays": 20,
+      "rainyDays": 10
+    }
+  },
+  "agriculturalAdvisory": {
+    "wheat": {
+      "status": "Good growing conditions",
+      "advice": "Continue regular irrigation schedule. Monitor for aphids.",
+      "nextIrrigation": "2 days"
+    },
+    "rice": {
+      "status": "Harvesting period",
+      "advice": "Complete harvesting before expected rain on Thursday",
+      "caution": "Check grain moisture content"
+    },
+    "vegetables": {
+      "status": "Favorable conditions",
+      "advice": "Good time for transplanting winter vegetables",
+      "pest": "Low pest activity expected"
+    }
+  }
+}

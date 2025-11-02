@@ -1,0 +1,178 @@
+{
+  "diseases": [
+    {
+      "id": 1,
+      "name": "Early Blight",
+      "crop": "Tomato",
+      "severity": "Medium",
+      "symptoms": [
+        "Dark spots with concentric rings on lower leaves",
+        "Yellowing around spots",
+        "Stem lesions near ground level",
+        "Fruit rot at stem end"
+      ],
+      "causes": [
+        "Fungus: Alternaria solani",
+        "Warm and humid conditions",
+        "Poor air circulation",
+        "Overhead irrigation"
+      ],
+      "treatment": [
+        "Remove affected leaves immediately",
+        "Apply copper-based fungicide",
+        "Use Mancozeb 75% WP at 2g/L",
+        "Spray Chlorothalonil at recommended dose"
+      ],
+      "prevention": [
+        "Use resistant varieties",
+        "Proper spacing between plants",
+        "Drip irrigation instead of overhead",
+        "Crop rotation with non-host crops",
+        "Mulching to prevent soil splash"
+      ],
+      "image": "/images/plant.png"
+    },
+    {
+      "id": 2,
+      "name": "Powdery Mildew",
+      "crop": "Cucumber",
+      "severity": "High",
+      "symptoms": [
+        "White powdery spots on leaves",
+        "Yellowing of infected leaves",
+        "Premature leaf drop",
+        "Stunted growth"
+      ],
+      "causes": [
+        "Fungus: Podosphaera xanthii",
+        "High humidity with moderate temperature",
+        "Poor air circulation",
+        "Dense planting"
+      ],
+      "treatment": [
+        "Spray sulfur-based fungicides",
+        "Apply neem oil solution",
+        "Use Tridemorph 80% EC",
+        "Potassium bicarbonate spray"
+      ],
+      "prevention": [
+        "Plant resistant varieties",
+        "Ensure proper ventilation",
+        "Avoid overhead watering",
+        "Remove infected plant debris"
+      ],
+      "image": "/images/plant.png"
+    },
+    {
+      "id": 3,
+      "name": "Bacterial Wilt",
+      "crop": "Potato",
+      "severity": "High",
+      "symptoms": [
+        "Sudden wilting of leaves",
+        "Brown discoloration in vascular tissue",
+        "Bacterial ooze from cut stems",
+        "Plant death within days"
+      ],
+      "causes": [
+        "Bacterium: Ralstonia solanacearum",
+        "High soil temperature and moisture",
+        "Contaminated irrigation water",
+        "Infected seed tubers"
+      ],
+      "treatment": [
+        "No chemical cure available",
+        "Remove and burn infected plants",
+        "Treat soil with lime",
+        "Use biological control agents"
+      ],
+      "prevention": [
+        "Use certified disease-free seeds",
+        "Crop rotation for 3-4 years",
+        "Improve soil drainage",
+        "Avoid injury to roots"
+      ],
+      "image": "/images/plant.png"
+    },
+    {
+      "id": 4,
+      "name": "Yellow Mosaic Virus",
+      "crop": "Okra",
+      "severity": "Medium",
+      "symptoms": [
+        "Yellow and green mosaic pattern on leaves",
+        "Leaf distortion and curling",
+        "Stunted plant growth",
+        "Reduced fruit production"
+      ],
+      "causes": [
+        "Virus transmitted by whitefly",
+        "High whitefly population",
+        "Infected plant debris",
+        "Alternate host plants"
+      ],
+      "treatment": [
+        "Control whitefly vectors",
+        "Spray Imidacloprid 17.8% SL",
+        "Apply neem oil regularly",
+        "Remove infected plants"
+      ],
+      "prevention": [
+        "Use virus-resistant varieties",
+        "Install yellow sticky traps",
+        "Regular weeding",
+        "Barrier crops around field"
+      ],
+      "image": "/images/plant.png"
+    },
+    {
+      "id": 5,
+      "name": "Rust",
+      "crop": "Wheat",
+      "severity": "High",
+      "symptoms": [
+        "Orange-brown pustules on leaves",
+        "Yellow streaks on leaves",
+        "Premature leaf death",
+        "Shriveled grains"
+      ],
+      "causes": [
+        "Fungus: Puccinia species",
+        "Cool nights and warm days",
+        "High humidity",
+        "Wind-borne spores"
+      ],
+      "treatment": [
+        "Apply Propiconazole 25% EC",
+        "Spray Tebuconazole",
+        "Use Mancozeb as preventive",
+        "Foliar spray of fungicides"
+      ],
+      "prevention": [
+        "Grow resistant varieties",
+        "Timely sowing",
+        "Balanced fertilization",
+        "Remove volunteer plants"
+      ],
+      "image": "/images/plant.png"
+    }
+  ],
+  "detectionTips": [
+    {
+      "tip": "Take clear photos in good lighting",
+      "description": "Ensure the affected area is clearly visible"
+    },
+    {
+      "tip": "Capture multiple angles",
+      "description": "Take photos of leaves, stems, and overall plant"
+    },
+    {
+      "tip": "Include healthy tissue",
+      "description": "Show contrast between healthy and diseased parts"
+    },
+    {
+      "tip": "Note environmental conditions",
+      "description": "Record temperature, humidity, and recent weather"
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "pestAlerts": [
+    {
+      "id": 1,
+      "pestName": "Bollworm",
+      "affectedCrops": ["Cotton", "Chickpea", "Tomato", "Okra"],
+      "severity": "High",
+      "currentStatus": "Active",
+      "regions": ["Punjab", "Haryana", "Gujarat", "Maharashtra"],
+      "symptoms": [
+        "Holes in bolls and squares",
+        "Damaged flower buds",
+        "Entry holes with frass",
+        "Dropped squares and bolls"
+      ],
+      "preventiveMeasures": [
+        "Install pheromone traps",
+        "Regular field monitoring",
+        "Remove infected plant parts",
+        "Maintain field hygiene"
+      ],
+      "treatment": [
+        "Spray Emamectin Benzoate 5% SG",
+        "Use Spinosad 45% SC",
+        "Apply Neem-based pesticides",
+        "Biological control with Trichogramma"
+      ],
+      "image": "/images/pest.png"
+    },
+    {
+      "id": 2,
+      "pestName": "Aphids",
+      "affectedCrops": ["Mustard", "Wheat", "Cotton", "Vegetables"],
+      "severity": "Medium",
+      "currentStatus": "Monitoring",
+      "regions": ["Uttar Pradesh", "Madhya Pradesh", "Rajasthan"],
+      "symptoms": [
+        "Curled and yellowing leaves",
+        "Sticky honeydew on plants",
+        "Stunted plant growth",
+        "Sooty mold development"
+      ],
+      "preventiveMeasures": [
+        "Use yellow sticky traps",
+        "Maintain proper spacing",
+        "Remove weeds regularly",
+        "Encourage natural predators"
+      ],
+      "treatment": [
+        "Spray Imidacloprid 17.8% SL",
+        "Apply Thiamethoxam 25% WG",
+        "Use neem oil solution",
+        "Release ladybird beetles"
+      ],
+      "image": "/images/pest.png"
+    },
+    {
+      "id": 3,
+      "pestName": "Fall Armyworm",
+      "affectedCrops": ["Maize", "Sorghum", "Rice", "Sugarcane"],
+      "severity": "High",
+      "currentStatus": "Alert",
+      "regions": ["Karnataka", "Tamil Nadu", "Andhra Pradesh", "Telangana"],
+      "symptoms": [
+        "Window pane feeding on leaves",
+        "Ragged leaf edges",
+        "Holes in whorl leaves",
+        "Presence of larval frass"
+      ],
+      "preventiveMeasures": [
+        "Early sowing",
+        "Intercropping with pulses",
+        "Deep summer plowing",
+        "Pheromone trap monitoring"
+      ],
+      "treatment": [
+        "Spray Chlorantraniliprole 18.5% SC",
+        "Apply Spinetoram 11.7% SC",
+        "Use Metarhizium anisopliae",
+        "Seed treatment with Cyantraniliprole"
+      ],
+      "image": "/images/pest.png"
+    },
+    {
+      "id": 4,
+      "pestName": "Brown Plant Hopper",
+      "affectedCrops": ["Rice"],
+      "severity": "High",
+      "currentStatus": "Active",
+      "regions": ["West Bengal", "Odisha", "Chhattisgarh", "Andhra Pradesh"],
+      "symptoms": [
+        "Hopper burn symptoms",
+        "Yellowing from base",
+        "Circular patches of dried plants",
+        "Black sooty mold"
+      ],
+      "preventiveMeasures": [
+        "Avoid excessive nitrogen",
+        "Alternate wetting and drying",
+        "Use resistant varieties",
+        "Maintain optimum plant spacing"
+      ],
+      "treatment": [
+        "Apply Dinotefuran 20% SG",
+        "Spray Pymetrozine 50% WG",
+        "Use Buprofezin 25% SC",
+        "Drain field for 3-4 days"
+      ],
+      "image": "/images/pest.png"
+    }
+  ],
+  "diseases": [
+    {
+      "id": 1,
+      "diseaseName": "Wheat Rust",
+      "affectedCrop": "Wheat",
+      "type": "Fungal",
+      "symptoms": [
+        "Orange-brown pustules on leaves",
+        "Yellow streaks on leaves",
+        "Reduced grain size",
+        "Early leaf senescence"
+      ],
+      "conditions": "Temperature 15-20°C, High humidity",
+      "management": [
+        "Use resistant varieties",
+        "Spray Propiconazole 25% EC",
+        "Apply Tebuconazole 250 EC",
+        "Timely sowing"
+      ]
+    },
+    {
+      "id": 2,
+      "diseaseName": "Rice Blast",
+      "affectedCrop": "Rice",
+      "type": "Fungal",
+      "symptoms": [
+        "Diamond-shaped lesions on leaves",
+        "Node and neck blast",
+        "White to gray center spots",
+        "Broken neck of panicle"
+      ],
+      "conditions": "Temperature 25-28°C, High humidity, Frequent rainfall",
+      "management": [
+        "Seed treatment with Tricyclazole",
+        "Spray Azoxystrobin 23% SC",
+        "Use resistant varieties",
+        "Avoid excess nitrogen"
+      ]
+    }
+  ]
+}

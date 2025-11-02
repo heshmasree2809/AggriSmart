@@ -1,0 +1,167 @@
+{
+  "soilTypes": [
+    {
+      "id": 1,
+      "type": "Alluvial Soil",
+      "coverage": "40% of India",
+      "regions": ["Indo-Gangetic Plains", "River valleys", "Coastal plains"],
+      "characteristics": [
+        "Rich in potash",
+        "Poor in phosphorus",
+        "Good water retention",
+        "Highly fertile"
+      ],
+      "pH": "6.5-8.0",
+      "suitableCrops": ["Rice", "Wheat", "Sugarcane", "Cotton", "Jute"],
+      "improvements": [
+        "Add organic matter",
+        "Use phosphatic fertilizers",
+        "Practice crop rotation"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "Black Soil",
+      "coverage": "15% of India",
+      "regions": ["Deccan Plateau", "Maharashtra", "Gujarat", "Madhya Pradesh"],
+      "characteristics": [
+        "High clay content",
+        "Self-ploughing",
+        "Rich in calcium and magnesium",
+        "Poor in nitrogen and phosphorus"
+      ],
+      "pH": "7.2-8.5",
+      "suitableCrops": ["Cotton", "Wheat", "Jowar", "Linseed", "Castor", "Sunflower"],
+      "improvements": [
+        "Add nitrogen and phosphorus",
+        "Improve drainage",
+        "Add organic matter"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "Red Soil",
+      "coverage": "18% of India",
+      "regions": ["Eastern Deccan Plateau", "Tamil Nadu", "Karnataka", "Andhra Pradesh"],
+      "characteristics": [
+        "Iron-rich",
+        "Poor in nitrogen, phosphorus, and humus",
+        "Porous and friable",
+        "Low water retention"
+      ],
+      "pH": "5.5-7.0",
+      "suitableCrops": ["Groundnut", "Ragi", "Tobacco", "Potato", "Fruits"],
+      "improvements": [
+        "Add lime to reduce acidity",
+        "Use organic manures",
+        "Apply NPK fertilizers"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "Laterite Soil",
+      "coverage": "7% of India",
+      "regions": ["Western Ghats", "Eastern Ghats", "Kerala", "Odisha"],
+      "characteristics": [
+        "High in iron and aluminum",
+        "Poor in nitrogen, phosphorus, potassium",
+        "Acidic nature",
+        "Low fertility"
+      ],
+      "pH": "4.5-6.0",
+      "suitableCrops": ["Tea", "Coffee", "Cashew", "Rubber", "Coconut", "Spices"],
+      "improvements": [
+        "Apply lime regularly",
+        "Add organic matter",
+        "Use complete fertilizers"
+      ]
+    }
+  ],
+  "soilTestParameters": [
+    {
+      "parameter": "pH",
+      "idealRange": "6.0-7.5",
+      "importance": "Affects nutrient availability",
+      "correction": {
+        "low": "Add lime (calcium carbonate)",
+        "high": "Add sulfur or organic matter"
+      }
+    },
+    {
+      "parameter": "Organic Carbon",
+      "idealRange": "0.5-0.75%",
+      "importance": "Indicates soil fertility",
+      "correction": {
+        "low": "Add FYM, compost, green manure"
+      }
+    },
+    {
+      "parameter": "Nitrogen (N)",
+      "idealRange": "280-560 kg/ha",
+      "importance": "Essential for vegetative growth",
+      "correction": {
+        "low": "Apply urea, ammonium sulfate"
+      }
+    },
+    {
+      "parameter": "Phosphorus (P)",
+      "idealRange": "10-25 kg/ha",
+      "importance": "Root development and flowering",
+      "correction": {
+        "low": "Apply DAP, SSP"
+      }
+    },
+    {
+      "parameter": "Potassium (K)",
+      "idealRange": "120-280 kg/ha",
+      "importance": "Disease resistance and fruit quality",
+      "correction": {
+        "low": "Apply MOP, SOP"
+      }
+    }
+  ],
+  "soilHealthIndicators": [
+    {
+      "indicator": "Physical",
+      "parameters": ["Texture", "Structure", "Water holding capacity", "Bulk density"],
+      "goodSigns": ["Crumbly structure", "Good drainage", "No hardpan", "Dark color"]
+    },
+    {
+      "indicator": "Chemical",
+      "parameters": ["pH", "Nutrients", "CEC", "Salinity"],
+      "goodSigns": ["Neutral pH", "Balanced nutrients", "Low salinity", "High CEC"]
+    },
+    {
+      "indicator": "Biological",
+      "parameters": ["Organic matter", "Microbial activity", "Earthworms", "Root growth"],
+      "goodSigns": ["High organic matter", "Presence of earthworms", "Good root growth", "No disease"]
+    }
+  ],
+  "soilConservationPractices": [
+    {
+      "practice": "Crop Rotation",
+      "benefits": ["Maintains soil fertility", "Breaks pest cycles", "Improves soil structure"],
+      "implementation": "Rotate cereal-legume-oilseed crops"
+    },
+    {
+      "practice": "Cover Crops",
+      "benefits": ["Prevents erosion", "Adds organic matter", "Suppresses weeds"],
+      "implementation": "Plant dhaincha, sunhemp during fallow period"
+    },
+    {
+      "practice": "Minimum Tillage",
+      "benefits": ["Reduces erosion", "Conserves moisture", "Saves fuel"],
+      "implementation": "Use zero-till seed drill"
+    },
+    {
+      "practice": "Mulching",
+      "benefits": ["Conserves moisture", "Controls temperature", "Adds organic matter"],
+      "implementation": "Use crop residues or plastic mulch"
+    },
+    {
+      "practice": "Contour Farming",
+      "benefits": ["Reduces runoff", "Prevents erosion", "Conserves water"],
+      "implementation": "Plant along contour lines on slopes"
+    }
+  ]
+}

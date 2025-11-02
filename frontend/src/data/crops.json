@@ -1,0 +1,93 @@
+{
+  "seasonalCrops": [
+    {
+      "id": 1,
+      "season": "Winter",
+      "crops": ["Wheat", "Mustard", "Peas", "Gram", "Potato"],
+      "startMonth": "October",
+      "endMonth": "March",
+      "temperature": "10-25°C",
+      "description": "Winter crops require cool weather for germination and warm weather for growth"
+    },
+    {
+      "id": 2,
+      "season": "Summer",
+      "crops": ["Rice", "Cotton", "Sugarcane", "Pulses", "Jute"],
+      "startMonth": "April",
+      "endMonth": "June",
+      "temperature": "25-35°C",
+      "description": "Summer crops require warm weather throughout their growing period"
+    },
+    {
+      "id": 3,
+      "season": "Monsoon",
+      "crops": ["Rice", "Maize", "Jowar", "Bajra", "Tur"],
+      "startMonth": "June",
+      "endMonth": "October",
+      "temperature": "20-30°C",
+      "description": "Monsoon crops depend on rainfall patterns and require adequate water"
+    }
+  ],
+  "cropDetails": [
+    {
+      "id": 1,
+      "name": "Wheat",
+      "category": "Cereal",
+      "growthDuration": "120-150 days",
+      "soilType": "Loamy soil",
+      "waterRequirement": "450-650 mm",
+      "fertilizers": ["Urea", "DAP", "MOP"],
+      "commonDiseases": ["Rust", "Smut", "Blight"],
+      "marketPrice": 2200,
+      "priceUnit": "per quintal"
+    },
+    {
+      "id": 2,
+      "name": "Rice",
+      "category": "Cereal",
+      "growthDuration": "90-120 days",
+      "soilType": "Clay loam",
+      "waterRequirement": "1200-1400 mm",
+      "fertilizers": ["Urea", "SSP", "MOP"],
+      "commonDiseases": ["Blast", "Brown spot", "Bacterial blight"],
+      "marketPrice": 2040,
+      "priceUnit": "per quintal"
+    },
+    {
+      "id": 3,
+      "name": "Cotton",
+      "category": "Cash Crop",
+      "growthDuration": "160-180 days",
+      "soilType": "Black soil",
+      "waterRequirement": "700-1300 mm",
+      "fertilizers": ["Urea", "DAP", "Potash"],
+      "commonDiseases": ["Bollworm", "Aphids", "Whitefly"],
+      "marketPrice": 6200,
+      "priceUnit": "per quintal"
+    }
+  ],
+  "cropTrends": [
+    {
+      "crop": "Wheat",
+      "data": [
+        {"month": "Jan", "price": 2100, "demand": "High"},
+        {"month": "Feb", "price": 2150, "demand": "High"},
+        {"month": "Mar", "price": 2200, "demand": "Medium"},
+        {"month": "Apr", "price": 2250, "demand": "Low"},
+        {"month": "May", "price": 2300, "demand": "Low"},
+        {"month": "Jun", "price": 2200, "demand": "Medium"}
+      ]
+    },
+    {
+      "crop": "Rice",
+      "data": [
+        {"month": "Jan", "price": 1950, "demand": "Medium"},
+        {"month": "Feb", "price": 2000, "demand": "Medium"},
+        {"month": "Mar", "price": 2040, "demand": "High"},
+        {"month": "Apr", "price": 2100, "demand": "High"},
+        {"month": "May", "price": 2150, "demand": "Medium"},
+        {"month": "Jun", "price": 2050, "demand": "Low"}
+      ]
+    }
+  ]
+}

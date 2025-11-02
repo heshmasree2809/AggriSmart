@@ -1,0 +1,313 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+    background-image: linear-gradient(to bottom right, var(--color-farm-green-50), var(--color-farm-green-100));
+    margin: 0;
+    min-height: 100vh;
+    line-height: 1.6;
+    font-family: 'Poppins', 'Inter', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    color: #333;
+    overflow-x: hidden;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+    font-weight: 600;
+  }
+  
+  /* MUI and Tailwind color variables for seamless integration */
+  :root {
+    --mui-primary: #16a34a;
+    --mui-primary-light: #22c55e;
+    --mui-primary-dark: #15803d;
+    --mui-secondary: #10b981;
+    --mui-secondary-light: #34d399;
+    --mui-secondary-dark: #059669;
+  }
+}
+
+@layer components {
+  /* Modern Button Styles with Professional Polish */
+  .btn-primary {
+    @apply bg-gradient-to-r from-farm-green-600 to-farm-green-700 text-white px-8 py-3.5 rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl hover:from-farm-green-700 hover:to-farm-green-800 active:scale-[0.98] relative overflow-hidden;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-primary:hover::before {
+    left: 100%;
+  }
+
+  .btn-secondary {
+    @apply bg-white text-farm-green-700 px-8 py-3.5 rounded-xl font-semibold border-2 border-farm-green-200 transition-all duration-300 transform hover:scale-[1.02] hover:bg-gradient-to-r hover:from-farm-green-50 hover:to-white hover:border-farm-green-300 active:scale-[0.98];
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.12);
+  }
+
+  .btn-outline {
+    @apply border-2 border-farm-green-600 text-farm-green-600 px-8 py-3.5 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] hover:bg-farm-green-600 hover:text-white active:scale-[0.98] relative;
+    background-size: 200% 100%;
+    background-position: -100% 0;
+    background-image: linear-gradient(to right, transparent 50%, #16a34a 50%);
+    transition: all 0.3s ease-out;
+  }
+
+  .btn-outline:hover {
+    background-position: 0 0;
+  }
+
+  /* Card Styles with Professional Depth */
+  .card-modern {
+    @apply bg-white rounded-2xl p-8 transition-all duration-500 transform hover:-translate-y-1 border border-gray-100 relative;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    background: linear-gradient(to bottom, #ffffff, #fafafa);
+  }
+
+  .card-modern:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transform: translateY(-4px);
+  }
+
+  .card-gradient {
+    @apply bg-gradient-to-br from-white via-farm-green-50/50 to-farm-green-100/30 rounded-2xl p-8 transition-all duration-500 transform hover:-translate-y-1 border border-farm-green-200/50 backdrop-blur-sm;
+    box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.1), 0 2px 4px -1px rgba(34, 197, 94, 0.06);
+  }
+
+  .card-gradient:hover {
+    box-shadow: 0 20px 25px -5px rgba(34, 197, 94, 0.15), 0 10px 10px -5px rgba(34, 197, 94, 0.08);
+    border-color: #16a34a;
+  }
+
+  /* Input Styles with Professional Feel */
+  .input-modern {
+    @apply w-full px-5 py-3.5 rounded-xl border-2 border-gray-200 focus:border-farm-green-500 focus:ring-4 focus:ring-farm-green-200/30 focus:outline-none transition-all duration-300 bg-white;
+    font-size: 15px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  .input-modern:hover:not(:focus) {
+    border-color: #d1d5db;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.05);
+  }
+
+  .input-modern::placeholder {
+    color: #9ca3af;
+    font-weight: 400;
+  }
+
+  /* Navbar Styles with Glass Effect */
+  .navbar-modern {
+    @apply bg-gradient-to-r from-farm-green-800/95 to-farm-green-900/95 backdrop-blur-md;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .nav-link {
+    @apply text-white hover:text-farm-green-300 transition-all duration-300 font-medium px-3 py-2 rounded-lg hover:bg-white/10;
+  }
+
+  .nav-link-active {
+    @apply text-farm-green-300 bg-white/20 font-semibold;
+  }
+
+  /* Footer Styles */
+  .footer-modern {
+    @apply bg-gradient-to-r from-farm-green-900 to-farm-green-800 text-white;
+  }
+
+  /* Enhanced Animation Classes */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .animate-bounce-slow {
+    animation: bounce 2s infinite;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Hover Effects */
+  .hover-lift {
+    @apply transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg;
+  }
+
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-lg hover:shadow-farm-green-500/25;
+  }
+
+  /* Gradient Backgrounds */
+  .bg-farm-gradient {
+    background-image: linear-gradient(to bottom right, var(--color-farm-green-50), white, var(--color-farm-green-100));
+  }
+
+  /* Old app gradient style */
+  .bg-old-farm-gradient {
+    background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+  }
+
+  .bg-hero-gradient {
+    @apply bg-gradient-to-br from-farm-green-600 via-farm-green-700 to-farm-green-800;
+  }
+
+  /* Text Styles */
+  .text-gradient {
+    @apply bg-gradient-to-r from-farm-green-600 to-farm-green-800 bg-clip-text text-transparent;
+  }
+
+  /* Enhanced Loading States */
+  .loading-dots {
+    @apply inline-flex space-x-1;
+  }
+
+  .loading-dots div {
+    @apply w-2 h-2 bg-farm-green-500 rounded-full animate-bounce;
+  }
+
+  .loading-dots div:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  .loading-dots div:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+
+  /* Skeleton Loader */
+  .skeleton {
+    @apply bg-gray-200 rounded-lg;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+  }
+
+  @keyframes loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  /* Smooth Transitions */
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Professional Focus States */
+  .focus-ring {
+    @apply focus:ring-4 focus:ring-farm-green-500/20 focus:outline-none;
+  }
+}
+
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .text-shadow-lg {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* MUI + Tailwind Integration Utilities */
+  .mui-tailwind-card {
+    @apply bg-white rounded-2xl shadow-lg hover:shadow-2xl p-6 transition-all duration-300 transform hover:-translate-y-1 border border-gray-100;
+  }
+
+  /* Hero section styles from old app */
+  .hero {
+    background: linear-gradient(90deg, #2e7d32, #43a047, #388e3c);
+    color: white;
+    text-align: center;
+    padding: 7rem 2rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    margin: 2rem auto;
+    animation: fadeIn 1.5s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  @keyframes floatUp {
+    from { opacity: 0; transform: translateY(50px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero h1 {
+    font-size: 3rem;
+    text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.4);
+    margin-bottom: 1rem;
+    letter-spacing: 2px;
+  }
+
+  .hero p {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+  }
+  
+  .mui-tailwind-button {
+    @apply bg-gradient-to-r from-farm-green-600 to-farm-green-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl;
+  }
+  
+  /* Combine MUI sx prop with Tailwind classes */
+  .mui-with-tailwind {
+    /* Use this class on MUI components with className prop */
+    /* Example: <Button className="mui-with-tailwind hover:scale-110" /> */
+  }
+}
+ 
