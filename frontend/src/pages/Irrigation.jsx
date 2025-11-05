@@ -60,8 +60,14 @@ import irrigationDataJSON from '../data/irrigation.json';
 import cropsDataJSON from '../data/crops.json';
 
 const irrigationSystems = irrigationDataJSON.irrigationMethods || [];
-const irrigationSchedule = irrigationDataJSON.irrigationSchedule || [];
-const waterRequirements = irrigationSchedule.map(s => ({
+const irrigationScheduleData = irrigationDataJSON.irrigationSchedule || [];
+const irrigationScheduleMap = irrigationScheduleData.reduce((acc, item) => {
+  if (item?.crop) {
+    acc[item.crop.toLowerCase()] = item;
+  }
+  return acc;
+}, {});
+const waterRequirements = irrigationScheduleData.map(s => ({
   crop: s.crop,
   totalWaterRequirement: s.totalWaterRequirement,
   frequency: s.frequency
@@ -78,13 +84,13 @@ function Irrigation() {
 
   // Get crop specific water requirements
   const cropWaterData = useMemo(() => {
-    return waterRequirements.find(w => w.crop === selectedCrop) || waterRequirements[0] || { crop: selectedCrop, waterNeed: 'N/A', frequency: 'N/A' };
+    return waterRequirements.find(w => w.crop === selectedCrop) || waterRequirements[0] || { crop: selectedCrop, totalWaterRequirement: 'N/A', frequency: 'N/A' };
   }, [selectedCrop]);
 
   // Get irrigation schedule for selected crop
   const cropSchedule = useMemo(() => {
     const scheduleKey = selectedCrop.toLowerCase();
-    return irrigationSchedule[scheduleKey] || irrigationSchedule.wheat || [];
+    return irrigationScheduleMap[scheduleKey]?.criticalStages || irrigationScheduleMap['wheat']?.criticalStages || [];
   }, [selectedCrop]);
 
   return (
@@ -295,7 +301,7 @@ function Irrigation() {
                         Total Water Need
                       </Typography>
                       <Typography variant="h5" color="primary">
-                        {cropWaterData?.waterNeed || 'N/A'}
+                        {cropWaterData?.totalWaterRequirement || 'N/A'}
                       </Typography>
                     </Grid>
                     <Grid item xs={6}>
@@ -372,7 +378,7 @@ function Irrigation() {
             </Typography>
           </Grid>
           
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={6}>
             <Card>
               <CardContent>
                 <Avatar sx={{ bgcolor: 'info.main', mb: 2 }}>
@@ -388,7 +394,7 @@ function Irrigation() {
             </Card>
           </Grid>
 
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={6}>
             <Card>
               <CardContent>
                 <Avatar sx={{ bgcolor: 'success.main', mb: 2 }}>
@@ -404,7 +410,7 @@ function Irrigation() {
             </Card>
           </Grid>
 
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={6}>
             <Card>
               <CardContent>
                 <Avatar sx={{ bgcolor: 'warning.main', mb: 2 }}>
@@ -420,7 +426,7 @@ function Irrigation() {
             </Card>
           </Grid>
 
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={6}>
             <Card>
               <CardContent>
                 <Avatar sx={{ bgcolor: 'secondary.main', mb: 2 }}>
@@ -436,7 +442,7 @@ function Irrigation() {
             </Card>
           </Grid>
 
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={6}>
             <Card>
               <CardContent>
                 <Avatar sx={{ bgcolor: 'primary.main', mb: 2 }}>
@@ -452,7 +458,7 @@ function Irrigation() {
             </Card>
           </Grid>
 
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={6}>
             <Card>
               <CardContent>
                 <Avatar sx={{ bgcolor: 'error.main', mb: 2 }}>
@@ -477,14 +483,18 @@ function Irrigation() {
               </Typography>
               <List>
                 {irrigationTips && Array.isArray(irrigationTips) && irrigationTips.length > 0 ? (
-                  irrigationTips.map((tip, idx) => (
-                    <ListItem key={idx}>
-                      <ListItemIcon>
-                        <CheckIcon color="success" />
-                      </ListItemIcon>
-                      <ListItemText primary={tip} />
-                    </ListItem>
-                  ))
+                  irrigationTips.map((tip, idx) => {
+                    const primaryText = typeof tip === 'string' ? tip : tip.tip;
+                    const secondaryText = typeof tip === 'string' ? null : tip.description;
+                    return (
+                      <ListItem key={idx}>
+                        <ListItemIcon>
+                          <CheckIcon color="success" />
+                        </ListItemIcon>
+                        <ListItemText primary={primaryText} secondary={secondaryText} />
+                      </ListItem>
+                    );
+                  })
                 ) : (
                   <ListItem>
                     <ListItemText primary="Tips information will be available soon" secondary="Data not available" />

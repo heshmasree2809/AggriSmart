@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Grid, Paper, Typography, Box, Button, Card, CardContent, CardMedia, Chip, Fade, Grow, Zoom } from '@mui/material';
-import { ArrowForward } from '@mui/icons-material';
+import { Container, Grid, Paper, Typography, Box, Button, Card, CardContent, CardMedia, Chip, Fade, Grow, Zoom, Avatar, Stack } from '@mui/material';
+import { ArrowForward, TrendingUp, People, CheckCircle, Speed } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext.jsx';
+import HeroSection from '../components/HeroSection.jsx';
 import CustomCard from '../components/Card.jsx';
 
 function Home() {

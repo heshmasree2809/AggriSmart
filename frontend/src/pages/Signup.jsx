@@ -102,13 +102,18 @@ const Signup = () => {
 
     setIsLoading(true);
 
+    const roleMapping = {
+      farmer: 'Farmer',
+      buyer: 'Buyer'
+    };
+
     const result = await signup({
       name: formData.fullName,
       email: formData.email,
       password: formData.password,
       location: formData.location || 'India',
-      phone: formData.phone || '',
-      role: formData.userType
+      contact: formData.phone || '',
+      role: roleMapping[formData.userType] || 'Buyer'
     });
 
     if (!result.success) {

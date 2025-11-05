@@ -1,119 +1,336 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const mongoose = require('mongoose');
+const asyncHandler = require('../utils/asyncHandler');
+const ApiResponse = require('../utils/ApiResponse');
+const ApiError = require('../utils/ApiError');
+const { cache } = require('../config/redis');
 
-exports.signup = async (req, res) => {
+// Generate tokens
+const generateAccessToken = (user) => {
+  return jwt.sign(
+    { userId: user._id, email: user.email, role: user.role },
+    process.env.JWT_SECRET || process.env.ACCESS_TOKEN_SECRET,
+    { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || '15m' }
+  );
+};
+
+const generateRefreshToken = (user) => {
+  return jwt.sign(
+    { userId: user._id },
+    process.env.REFRESH_TOKEN_SECRET || process.env.JWT_SECRET,
+    { expiresIn: process.env.REFRESH_TOKEN_EXPIRY || '7d' }
+  );
+};
+
+// Signup/Register
+exports.signup = asyncHandler(async (req, res) => {
+  const { name, email, password, role, contact, address } = req.body;
+
+  // Check if user exists
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    throw new ApiError(409, 'Email already registered');
+  }
+
+  // Create user
+  const user = await User.create({
+    name,
+    email,
+    password,
+    role: role || 'Buyer',
+    contact,
+    address,
+    verificationStatus: false
+  });
+
+  // Generate tokens
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user);
+
+  // Save refresh token to user
+  user.refreshToken = refreshToken;
+  await user.save();
+
+  // Set refresh token in cookie
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+  });
+
+  // Remove password from response
+  const userResponse = user.toObject();
+  delete userResponse.password;
+  delete userResponse.refreshToken;
+
+  res.status(201).json(
+    new ApiResponse(201, {
+      user: userResponse,
+      accessToken
+    }, 'Registration successful')
+  );
+});
+
+// Login
+exports.login = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  // Find user with password field
+  const user = await User.findOne({ email }).select('+password +refreshToken');
+  if (!user || !(await user.checkPassword(password))) {
+    throw new ApiError(401, 'Invalid email or password');
+  }
+
+  // Check if account is active
+  if (!user.isActive) {
+    throw new ApiError(403, 'Account is deactivated. Please contact support.');
+  }
+
+  // Update last login
+  user.lastLogin = Date.now();
+  
+  // Generate tokens
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user);
+
+  // Save refresh token
+  user.refreshToken = refreshToken;
+  await user.save();
+
+  // Set refresh token in cookie
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 7 * 24 * 60 * 60 * 1000
+  });
+
+  // Remove sensitive fields
+  const userResponse = user.toObject();
+  delete userResponse.password;
+  delete userResponse.refreshToken;
+
+  res.json(
+    new ApiResponse(200, {
+      user: userResponse,
+      accessToken
+    }, 'Login successful')
+  );
+});
+
+// Refresh Token
+exports.refreshToken = asyncHandler(async (req, res) => {
+  const { refreshToken } = req.cookies || req.body;
+
+  if (!refreshToken) {
+    throw new ApiError(401, 'Refresh token not provided');
+  }
+
   try {
-    // Check if JWT_SECRET is configured
-    if (!process.env.JWT_SECRET) {
-      console.error('❌ JWT_SECRET is not set in .env file');
-      return res.status(500).json({ success: false, message: 'Server configuration error: JWT_SECRET missing' });
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET || process.env.JWT_SECRET);
+    const user = await User.findById(decoded.userId).select('+refreshToken');
+
+    if (!user || user.refreshToken !== refreshToken) {
+      throw new ApiError(401, 'Invalid refresh token');
     }
 
-    // Check if MongoDB is connected
-    if (mongoose.connection.readyState !== 1) {
-      console.error('❌ MongoDB is not connected');
-      return res.status(503).json({ success: false, message: 'Database connection unavailable. Please try again later.' });
-    }
+    // Generate new tokens
+    const newAccessToken = generateAccessToken(user);
+    const newRefreshToken = generateRefreshToken(user);
 
-    const { name, email, password } = req.body;
-
-    // Validate input
-    if (!name || !email || !password) {
-      return res.status(400).json({ success: false, message: 'Name, email, and password are required' });
-    }
-
-    if (password.length < 6) {
-      return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
-    }
-
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(409).json({ success: false, message: 'Email already registered' });
-    }
-
-    const user = new User({ name, email, password });
+    // Update refresh token
+    user.refreshToken = newRefreshToken;
     await user.save();
-    
-    // Generate token for auto-login after signup
-    const token = jwt.sign(
-      { userId: user._id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+
+    // Update cookie
+    res.cookie('refreshToken', newRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    res.json(
+      new ApiResponse(200, {
+        accessToken: newAccessToken
+      }, 'Token refreshed successfully')
     );
-    const userObj = user.toObject();
-    delete userObj.password;
-    
-    console.log(`✅ New user signed up: ${email}`);
-    res.status(201).json({ success: true, message: 'Signup successful', token, user: userObj });
-  } catch (err) {
-    console.error('❌ Signup error:', err);
-    
-    // Handle specific MongoDB errors
-    if (err.name === 'ValidationError') {
-      return res.status(400).json({ success: false, message: 'Validation error', error: err.message });
-    }
-    if (err.code === 11000) {
-      return res.status(409).json({ success: false, message: 'Email already registered' });
-    }
-    if (err.name === 'MongoServerError' || err.message?.includes('Mongo')) {
-      return res.status(503).json({ success: false, message: 'Database error. Please try again later.', error: 'Database connection issue' });
-    }
-    
-    res.status(500).json({ success: false, message: 'Signup failed', error: err.message });
+  } catch (error) {
+    throw new ApiError(401, 'Invalid or expired refresh token');
   }
-};
+});
 
-exports.login = async (req, res) => {
-  try {
-    // Check if JWT_SECRET is configured
-    if (!process.env.JWT_SECRET) {
-      console.error('❌ JWT_SECRET is not set in .env file');
-      return res.status(500).json({ success: false, message: 'Server configuration error: JWT_SECRET missing' });
-    }
+// Logout
+exports.logout = asyncHandler(async (req, res) => {
+  // Clear refresh token from database
+  if (req.user) {
+    await User.findByIdAndUpdate(req.user._id, {
+      $unset: { refreshToken: 1 }
+    });
+  }
 
-    // Check if MongoDB is connected
-    if (mongoose.connection.readyState !== 1) {
-      console.error('❌ MongoDB is not connected');
-      return res.status(503).json({ success: false, message: 'Database connection unavailable. Please try again later.' });
-    }
+  // Clear cookie
+  res.clearCookie('refreshToken');
 
-    const { email, password } = req.body;
+  // Clear any cache if exists
+  if (req.user) {
+    await cache.del(`user:${req.user._id}`);
+  }
 
-    // Validate input
-    if (!email || !password) {
-      return res.status(400).json({ success: false, message: 'Email and password are required' });
-    }
+  res.json(
+    new ApiResponse(200, null, 'Logged out successfully')
+  );
+});
 
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password' });
-    }
-    
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password' });
-    }
+// Forgot Password
+exports.forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
 
-    const token = jwt.sign(
-      { userId: user._id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+  const user = await User.findOne({ email });
+  if (!user) {
+    // Don't reveal if email exists
+    return res.json(
+      new ApiResponse(200, null, 'If the email exists, a password reset link has been sent')
     );
-    const userObj = user.toObject();
-    delete userObj.password;
-    
-    console.log(`✅ User logged in: ${email}`);
-    res.json({ success: true, message: 'Login successful', token, user: userObj });
-  } catch (err) {
-    console.error('❌ Login error:', err);
-    
-    // Handle specific MongoDB errors
-    if (err.name === 'MongoServerError' || err.message?.includes('Mongo')) {
-      return res.status(503).json({ success: false, message: 'Database error. Please try again later.', error: 'Database connection issue' });
-    }
-    
-    res.status(500).json({ success: false, message: 'Login failed', error: err.message });
   }
-};
+
+  // Generate reset token
+  const resetToken = user.generatePasswordResetToken();
+  await user.save();
+
+  // TODO: Send email with reset link
+  // const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+  // await sendEmail({
+  //   to: email,
+  //   subject: 'Password Reset Request',
+  //   template: 'passwordReset',
+  //   data: { resetUrl, name: user.name }
+  // });
+
+  res.json(
+    new ApiResponse(200, null, 'If the email exists, a password reset link has been sent')
+  );
+});
+
+// Reset Password
+exports.resetPassword = asyncHandler(async (req, res) => {
+  const { token, password } = req.body;
+
+  const user = await User.findOne({
+    passwordResetToken: token,
+    passwordResetExpires: { $gt: Date.now() }
+  });
+
+  if (!user) {
+    throw new ApiError(400, 'Invalid or expired reset token');
+  }
+
+  // Update password
+  user.password = password;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+
+  // Generate new tokens for auto-login
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user);
+
+  user.refreshToken = refreshToken;
+  await user.save();
+
+  res.json(
+    new ApiResponse(200, {
+      accessToken,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    }, 'Password reset successful')
+  );
+});
+
+// Get Profile
+exports.getProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id).select('-password -refreshToken');
+  
+  if (!user) {
+    throw new ApiError(404, 'User not found');
+  }
+
+  res.json(
+    new ApiResponse(200, user, 'Profile fetched successfully')
+  );
+});
+
+// Update Profile
+exports.updateProfile = asyncHandler(async (req, res) => {
+  const updates = req.body;
+  
+  // Fields that cannot be updated through this endpoint
+  const restrictedFields = ['password', 'email', 'role', 'refreshToken', 'passwordResetToken'];
+  restrictedFields.forEach(field => delete updates[field]);
+
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    updates,
+    { new: true, runValidators: true }
+  ).select('-password -refreshToken');
+
+  if (!user) {
+    throw new ApiError(404, 'User not found');
+  }
+
+  res.json(
+    new ApiResponse(200, user, 'Profile updated successfully')
+  );
+});
+
+// Change Password
+exports.changePassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  const user = await User.findById(req.user._id).select('+password');
+  
+  // Verify current password
+  if (!(await user.checkPassword(currentPassword))) {
+    throw new ApiError(401, 'Current password is incorrect');
+  }
+
+  // Update password
+  user.password = newPassword;
+  await user.save();
+
+  res.json(
+    new ApiResponse(200, null, 'Password changed successfully')
+  );
+});
+
+// Verify Email
+exports.verifyEmail = asyncHandler(async (req, res) => {
+  const { token } = req.params;
+
+  const user = await User.findOne({
+    emailVerificationToken: token,
+    emailVerificationExpires: { $gt: Date.now() }
+  });
+
+  if (!user) {
+    throw new ApiError(400, 'Invalid or expired verification token');
+  }
+
+  user.verificationStatus = true;
+  user.emailVerificationToken = undefined;
+  user.emailVerificationExpires = undefined;
+  await user.save();
+
+  res.json(
+    new ApiResponse(200, null, 'Email verified successfully')
+  );
+});
 

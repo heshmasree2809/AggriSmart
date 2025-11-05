@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api.service';
+import { API_ENDPOINTS } from '../config/api.config';
 
 const AuthContext = createContext();
 
@@ -45,7 +46,7 @@ export const AuthProvider = ({ children }) => {
     
     try {
       // Make API call to backend
-      const response = await api.post('/login', credentials);
+      const response = await api.post(API_ENDPOINTS.AUTH.LOGIN, credentials);
       
       // Response from server: { success: true, token, user, message }
       if (response && response.success) {
@@ -84,7 +85,7 @@ export const AuthProvider = ({ children }) => {
     
     try {
       // Make API call to backend
-      const response = await api.post('/signup', userData);
+      const response = await api.post(API_ENDPOINTS.AUTH.SIGNUP, userData);
       
       // Response from server: { success: true, token, user, message }
       if (response && response.success) {
@@ -134,7 +135,7 @@ export const AuthProvider = ({ children }) => {
       }
       
       // Make API call to update profile
-      const response = await api.put('/auth/update-profile', profileData);
+      const response = await api.put(API_ENDPOINTS.AUTH.UPDATE_PROFILE, profileData);
       
       if (response.success && response.data) {
         const updatedUser = response.data.user || response.data;

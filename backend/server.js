@@ -3,6 +3,47 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const helmet = require('helmet');
+const compression = require('compression');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
+const hpp = require('hpp');
+const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
+const { createServer } = require('http');
+const { Server } = require('socket.io');
+const path = require('path');
+const winston = require('winston');
+
+// Import custom middleware
+const { errorHandler, notFound } = require('./middleware/errorHandler');
+const { generalLimiter } = require('./middleware/rateLimiter');
+
+// Import database config
+const connectDB = require('./config/database');
+const { redisClient, connectRedis } = require('./config/redis');
+
+// Configure Winston logger
+const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL || 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.errors({ stack: true }),
+    winston.format.splat(),
+    winston.format.json()
+  ),
+  defaultMeta: { service: 'agrismart-api' },
+  transports: [
+    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'logs/combined.log' }),
+    new winston.transports.Console({
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.simple()
+      )
+    })
+  ]
+});
 
 // Import all routes
 const authRoutes = require('./routes/auth');
@@ -11,53 +52,130 @@ const productRoutes = require('./routes/product');
 const orderRoutes = require('./routes/order');
 const soilRoutes = require('./routes/soil');
 const weatherRoutes = require('./routes/weather');
+const diseaseRoutes = require('./routes/disease');
+const cropRoutes = require('./routes/crop');
 
 const app = express();
+const server = createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: process.env.CLIENT_URL?.split(',') || ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000'],
+    credentials: true
+  }
+});
+
 const PORT = process.env.PORT || 9653;
 
-// Middlewares
-// Configure CORS to explicitly allow requests from frontend
+// Configure CORS
 const corsOptions = {
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000'], // Allow frontend origins
+  origin: function (origin, callback) {
+    const allowedOrigins = process.env.CLIENT_URL?.split(',') || [
+      'http://localhost:5173',
+      'http://127.0.0.1:5173',
+      'http://localhost:3000'
+    ];
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'X-API-Key'],
+  exposedHeaders: ['X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset'],
   optionsSuccessStatus: 200,
-  preflightContinue: false
+  maxAge: 86400 // 24 hours
 };
 
-app.use(cors(corsOptions));
+// Trust proxy - important for deployment
+app.set('trust proxy', 1);
 
-// Handle preflight requests explicitly
+// Security middleware - must be before routes
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      imgSrc: ["'self'", 'data:', 'blob:', 'https:'],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      connectSrc: ["'self'", 'ws:', 'wss:']
+    }
+  },
+  crossOriginEmbedderPolicy: process.env.NODE_ENV === 'production'
+}));
+
+// Enable CORS
+app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
-app.use(express.json());
+
+// Compression middleware
+app.use(compression({
+  filter: (req, res) => {
+    if (req.headers['x-no-compression']) {
+      return false;
+    }
+    return compression.filter(req, res);
+  },
+  level: 6
+}));
+
+// Logging middleware
+if (process.env.NODE_ENV === 'production') {
+  app.use(morgan('combined', {
+    stream: {
+      write: (message) => logger.info(message.trim())
+    }
+  }));
+} else {
+  app.use(morgan('dev'));
+}
+
+// Body parsing middleware
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(cookieParser());
+
+// Security middleware
+app.use(mongoSanitize()); // Prevent NoSQL injection
+app.use(xss()); // Clean user input from malicious HTML
+app.use(hpp()); // Prevent HTTP parameter pollution
+
+// Rate limiting
+app.use('/api/', generalLimiter);
+
+// Serve static files for uploads with proper headers
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+  maxAge: '30d',
+  etag: true,
+  lastModified: true,
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg') || filePath.endsWith('.png')) {
+      res.setHeader('Cache-Control', 'public, max-age=2592000'); // 30 days
+    }
+  }
+}));
+
+// Make io accessible in routes
+app.set('io', io);
 
 // API Routes
 // Use the base paths for all routes
-app.use('/api', authRoutes); // for /api/login, /api/signup
+app.use('/api/auth', authRoutes); // for /api/auth/login, /api/auth/signup
 app.use('/api/info', infoRoutes); // for /api/info/fertilizers, etc.
 app.use('/api/products', productRoutes); // for /api/products
 app.use('/api/orders', orderRoutes); // for /api/orders/checkout, etc.
 app.use('/api/soil', soilRoutes); // for /api/soil
 app.use('/api/weather', weatherRoutes); // for /api/weather/forecast
+app.use('/api/disease', diseaseRoutes); // for /api/disease/scan
+app.use('/api/crop', cropRoutes); // for /api/crop/recommendations
 
-// Global error handler middleware (MUST be after routes)
-app.use((err, req, res, next) => {
-  console.error('❌ Global Error Handler:', err);
-  res.status(err.status || 500).json({
-    success: false,
-    message: err.message || 'Internal server error',
-    error: process.env.NODE_ENV === 'development' ? err.stack : undefined
-  });
-});
-
-// Handle 404 for undefined routes (MUST be last)
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: `Route not found: ${req.method} ${req.path}`
-  });
-});
+// Error handling middleware (MUST be after routes)
+app.use(notFound);
+app.use(errorHandler);
 
 // Health check endpoint
 app.get('/', (req, res) => {
@@ -66,12 +184,14 @@ app.get('/', (req, res) => {
     message: 'AgriSmart API is running',
     status: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
     endpoints: {
-      auth: '/api/signup, /api/login, /api/verifyToken',
-      products: '/api/products (GET)',
+      auth: '/api/auth/signup, /api/auth/login',
+      products: '/api/products (GET, POST, PUT, DELETE)',
       orders: '/api/orders/checkout (POST), /api/orders/my-orders (GET)',
-      soil: '/api/soil (GET, POST)',
+      soil: '/api/soil (GET, POST), /api/soil/analysis, /api/soil/history',
       info: '/api/info/fertilizers, /api/info/pests, /api/info/schemes',
-      weather: '/api/weather/forecast (GET)'
+      weather: '/api/weather/forecast, /api/weather/alerts, /api/weather/insights',
+      disease: '/api/disease/scan (POST), /api/disease/my-scans (GET)',
+      crop: '/api/crop/recommendations (GET), /api/crop/calendar (GET)'
     }
   });
 });
@@ -152,120 +272,138 @@ app.get('/api/docs', (req, res) => {
   });
 });
 
-// Connect to MongoDB
-let mongoUri = process.env.MONGODB_URI;
-const isDev = process.env.NODE_ENV !== 'production';
-
-// Debug: Check if URI exists
-if (!mongoUri) {
-  console.error('❌ Error: MONGODB_URI is not defined in .env file');
-  console.error('💡 Please create backend/.env file with your MongoDB connection string');
-  if (!isDev) process.exit(1);
-}
-
-// Clean up the URI (remove quotes and whitespace)
-if (mongoUri) {
-  mongoUri = mongoUri.trim().replace(/^["']|["']$/g, '');
+// Socket.io configuration
+io.on('connection', (socket) => {
+  logger.info(`New client connected: ${socket.id}`);
   
-  // Debug: Show masked URI (hide password)
-  const maskedUri = mongoUri.replace(/:([^:@]+)@/, ':****@');
-  console.log('🔗 Attempting to connect to MongoDB...');
-  console.log('📍 Connection string:', maskedUri);
-  
-  mongoose.connect(mongoUri, {
-    serverSelectionTimeoutMS: 30000, // 30 seconds timeout
-    socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-    maxPoolSize: 10, // Maintain up to 10 socket connections
-    minPoolSize: 5, // Maintain at least 5 socket connections
-    retryWrites: true,
-    w: 'majority'
-  })
-  .then(() => {
-    console.log('✅ MongoDB connected successfully');
-    startServer();
-  })
-  .catch((err) => {
-    console.error('❌ MongoDB connection failed!');
-    console.error('📋 Error Type:', err.name);
-    console.error('📋 Error Message:', err.message);
-    console.error('');
-    
-    // Provide specific troubleshooting based on error type
-    if (err.message.includes('authentication failed') || err.message.includes('bad auth')) {
-      console.error('🔐 Authentication Error:');
-      console.error('   - Username or password is incorrect');
-      console.error('   - Verify database user exists in MongoDB Atlas');
-      console.error('   - Check user permissions in MongoDB Atlas');
-    } else if (err.message.includes('querySrv') || err.message.includes('ENOTFOUND') || err.message.includes('EBADNAME')) {
-      console.error('🌐 DNS/Network Error:');
-      console.error('   - Cluster URL might be incorrect');
-      console.error('   - Check internet connection');
-      console.error('   - Verify cluster is running in MongoDB Atlas');
-      console.error('   - The cluster URL should match exactly from Atlas');
-    } else if (err.message.includes('IP') || err.message.includes('whitelist')) {
-      console.error('🚫 IP Whitelist Error:');
-      console.error('   - Your IP address is not whitelisted');
-      console.error('   - Go to: MongoDB Atlas → Network Access → Add IP Address');
-      console.error('   - Add 0.0.0.0/0 for all IPs (development only)');
-    } else if (err.message.includes('timeout')) {
-      console.error('⏱️  Timeout Error:');
-      console.error('   - Connection timed out');
-      console.error('   - Check firewall/antivirus settings');
-      console.error('   - Verify network connectivity');
-    }
-    
-    console.error('');
-    console.error('💡 Quick Fix Steps:');
-    console.error('   1. Run: node test-connection.js (in backend folder)');
-    console.error('   2. Verify connection string in MongoDB Atlas dashboard');
-    console.error('   3. Check Network Access → IP Whitelist in MongoDB Atlas');
-    console.error('   4. Ensure cluster is running (not paused)');
-    console.error('');
-    
-    if (isDev) {
-      console.log('⚠️  Running in DEV mode - Server will start anyway');
-      console.log('⚠️  Database operations will fail until MongoDB is connected');
-      console.log('⚠️  Run "node test-connection.js" to debug connection');
-      console.log('');
-      startServer();
-    } else {
-      process.exit(1);
-    }
+  // Join user to their personal room
+  socket.on('join', (userId) => {
+    socket.join(`user:${userId}`);
+    logger.info(`User ${userId} joined their room`);
   });
-} else {
-  console.log('⚠️  MONGODB_URI not set - Server will start in limited mode');
-  startServer();
+  
+  // Join role-based rooms
+  socket.on('join-role', (role) => {
+    socket.join(`role:${role}`);
+    logger.info(`Socket ${socket.id} joined role room: ${role}`);
+  });
+  
+  // Handle disconnect
+  socket.on('disconnect', () => {
+    logger.info(`Client disconnected: ${socket.id}`);
+  });
+  
+  // Handle errors
+  socket.on('error', (error) => {
+    logger.error(`Socket error: ${error.message}`);
+  });
+});
+
+// Export io for use in controllers
+app.locals.io = io;
+
+// Initialize application
+async function initializeApp() {
+  try {
+    // Connect to MongoDB
+    await connectDB();
+    logger.info('✅ MongoDB connected');
+    
+    // Connect to Redis
+    await connectRedis();
+    logger.info('✅ Redis connected');
+    
+    // Start server
+    startServer();
+  } catch (error) {
+    logger.error('❌ Failed to initialize application:', error);
+    if (process.env.NODE_ENV === 'production') {
+      process.exit(1);
+    } else {
+      logger.warn('⚠️ Running in development mode with limited functionality');
+      startServer();
+    }
+  }
 }
+
+// Initialize the application
+initializeApp();
 
 // Start server function
 function startServer() {
-  // Verify JWT_SECRET is set
-  if (!process.env.JWT_SECRET) {
-    console.warn('⚠️  WARNING: JWT_SECRET is not set in .env file');
-    console.warn('⚠️  Authentication will fail. Please set JWT_SECRET in backend/.env');
-  } else {
-    console.log('🔐 JWT_SECRET is configured');
+  // Verify environment variables
+  const requiredEnvVars = [
+    'JWT_SECRET',
+    'MONGODB_URI'
+  ];
+  
+  const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+  
+  if (missingVars.length > 0) {
+    logger.warn(`⚠️ Missing environment variables: ${missingVars.join(', ')}`);
+    if (process.env.NODE_ENV === 'production') {
+      logger.error('❌ Cannot start server in production without required environment variables');
+      process.exit(1);
+    }
   }
 
-  app.listen(PORT, (err) => {
+  server.listen(PORT, (err) => {
     if (err) {
-      console.error('❌ Failed to start server:', err);
+      logger.error('❌ Failed to start server:', err);
       return;
     }
-    console.log(`✅ Server started on port ${PORT}`);
-    console.log(`🌐 API available at http://localhost:${PORT}`);
-    console.log(`📚 API Documentation: http://localhost:${PORT}/api/docs`);
-    console.log(`🧪 Test endpoint: http://localhost:${PORT}/api/test`);
-    console.log('');
+    logger.info(`✅ Server started on port ${PORT}`);
+    logger.info(`🌐 API available at http://localhost:${PORT}`);
+    logger.info(`📚 API Documentation: http://localhost:${PORT}/api/docs`);
+    logger.info(`🧪 Test endpoint: http://localhost:${PORT}/api/test`);
+    logger.info(`🔌 WebSocket server ready for connections`);
+    
+    // Log environment
+    logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    logger.info(`MongoDB: ${mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'}`);
+    logger.info(`Redis: ${redisClient?.isOpen ? 'Connected' : 'Disconnected'}`);
   });
+
+  // Graceful shutdown
+  const gracefulShutdown = async (signal) => {
+    logger.info(`${signal} received. Starting graceful shutdown...`);
+    
+    // Stop accepting new connections
+    server.close(() => {
+      logger.info('HTTP server closed');
+    });
+    
+    // Close database connections
+    try {
+      await mongoose.connection.close();
+      logger.info('MongoDB connection closed');
+      
+      if (redisClient?.isOpen) {
+        await redisClient.quit();
+        logger.info('Redis connection closed');
+      }
+      
+      process.exit(0);
+    } catch (error) {
+      logger.error('Error during shutdown:', error);
+      process.exit(1);
+    }
+  };
+
+  // Handle shutdown signals
+  process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+  process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
   // Handle uncaught errors
   process.on('unhandledRejection', (err) => {
-    console.error('❌ Unhandled Promise Rejection:', err);
+    logger.error('❌ Unhandled Promise Rejection:', err);
+    if (process.env.NODE_ENV === 'production') {
+      gracefulShutdown('unhandledRejection');
+    }
   });
 
   process.on('uncaughtException', (err) => {
-    console.error('❌ Uncaught Exception:', err);
-    process.exit(1);
+    logger.error('❌ Uncaught Exception:', err);
+    gracefulShutdown('uncaughtException');
   });
 }

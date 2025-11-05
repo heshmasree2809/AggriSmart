@@ -129,20 +129,24 @@ const CartModal = () => {
                   <Paper
                     key={item.id}
                     elevation={1}
-                    sx={{ mb: 2, p: 2 }}
+                    sx={{ mb: 1.5, p: 1.5 }}
                   >
                     <ListItem disablePadding>
-                      <ListItemAvatar>
+                      <ListItemAvatar sx={{ minWidth: 56 }}>
                         <Avatar
                           variant="rounded"
-                          src={item.image}
-                          sx={{ width: 60, height: 60, bgcolor: 'primary.light' }}
+                          src={item.imageUrl || item.image}
+                          sx={{ width: 40, height: 40, bgcolor: 'primary.light' }}
                         >
-                          {item.image ? null : '🌱'}
+                          {(item.imageUrl || item.image) ? null : '🌱'}
                         </Avatar>
                       </ListItemAvatar>
                       <ListItemText
-                        primary={item.name}
+                        primary={
+                          <Typography variant="body2" fontWeight="medium">
+                            {item.name}
+                          </Typography>
+                        }
                         secondary={
                           <Typography variant="caption" color="text.secondary">
                             {formatCurrency(itemPrice)} per {item.unit || 'kg'}
@@ -162,28 +166,28 @@ const CartModal = () => {
                     </ListItem>
                     
                     {/* Quantity Controls */}
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 2 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mt: 1.5 }}>
                       <Button
                         variant="outlined"
                         size="small"
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        sx={{ minWidth: 40 }}
+                        sx={{ minWidth: 32, p: 0.5 }}
                       >
                         <RemoveIcon fontSize="small" />
                       </Button>
-                      <Typography variant="body1" fontWeight="bold" sx={{ minWidth: 40, textAlign: 'center' }}>
+                      <Typography variant="body2" fontWeight="bold" sx={{ minWidth: 50, textAlign: 'center' }}>
                         {item.quantity} {item.unit || 'kg'}
                       </Typography>
                       <Button
                         variant="outlined"
                         size="small"
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        sx={{ minWidth: 40 }}
+                        sx={{ minWidth: 32, p: 0.5 }}
                       >
                         <AddIcon fontSize="small" />
                       </Button>
                       <Typography
-                        variant="h6"
+                        variant="body1"
                         color="primary"
                         fontWeight="bold"
                         sx={{ ml: 'auto' }}

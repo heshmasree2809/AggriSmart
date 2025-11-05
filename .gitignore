@@ -1,0 +1,87 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Production builds
+dist/
+build/
+*/dist/
+*/build/
+
+# Environment files
+# .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+# */.env
+*/.env.*
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Test coverage
+coverage/
+*.lcov
+.nyc_output/
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+.cache/
+
+# Upload files (keep structure, ignore content)
+backend/uploads/diseases/*
+!backend/uploads/diseases/.gitkeep
+backend/uploads/products/*
+!backend/uploads/products/.gitkeep
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.sublime-workspace
+
+# Package manager
+.npm/
+.yarn/
+.pnp.*
+
+# Debug
+.debug/
+debug/
+
+# Documentation build
+docs/_build/
+docs/.vitepress/dist/
+
+# Python (if any scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/

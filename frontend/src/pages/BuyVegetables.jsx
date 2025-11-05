@@ -81,6 +81,7 @@ function BuyVegetables() {
   const [addedToCart, setAddedToCart] = useState({});
   const [vegetablesData, setVegetablesData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
   const { addToCart, getCartCount, setIsCartOpen } = useCart();
   const { user, isAuthenticated } = useAuth();
@@ -91,13 +92,39 @@ function BuyVegetables() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await api.get('/products');
+        setError(null);
+        const response = await api.get('/products', { limit: 100 });
         if (response && response.success) {
-          const products = Array.isArray(response.data) ? response.data : [];
-          setVegetablesData(products);
+          const products = Array.isArray(response.products)
+            ? response.products
+            : Array.isArray(response.data)
+              ? response.data
+              : [];
+
+          const normalizedProducts = products.map((product) => ({
+            ...product,
+            price: Number(product.price ?? 0),
+            discount: Number(product.discount ?? 0),
+            rating: Number(product.rating ?? 0),
+            reviews: Number(product.reviews ?? 0),
+            unit: product.unit || 'kg',
+            imageUrl: product.imageUrl || product.image || '/images/vegetables.png',
+            farmer: product.seller
+              ? {
+                  name: product.seller.name || 'Local Farmer',
+                  location: product.seller.location || 'Local'
+                }
+              : product.farmer || null
+          }));
+
+          setVegetablesData(normalizedProducts);
+        } else {
+          setVegetablesData([]);
+          setError('Unable to load fresh vegetables at the moment.');
         }
       } catch (error) {
         console.error('Error fetching products:', error);
+        setError('Failed to load fresh vegetables. Please try again.');
       } finally {
         setLoading(false);
       }
@@ -133,8 +160,8 @@ function BuyVegetables() {
   
   // Filter and sort vegetables
   const filteredVegetables = useMemo(() => {
-    let filtered = vegetablesData;
-    
+    let filtered = [...vegetablesData];
+
     // Category filter
     if (selectedCategory !== 'All') {
       filtered = filtered.filter(veg => veg.category === selectedCategory);
@@ -171,7 +198,7 @@ function BuyVegetables() {
     }
     
     return sorted;
-  }, [selectedCategory, searchTerm, sortBy]);
+  }, [selectedCategory, searchTerm, sortBy, vegetablesData]);
 
 
   return (
@@ -250,6 +277,13 @@ function BuyVegetables() {
           </Grid>
         </Paper>
 
+        {/* Error state */}
+        {error && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {error}
+          </Alert>
+        )}
+
         {/* Category Tabs */}
         <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 4 }}>
           <Tabs
@@ -275,57 +309,103 @@ function BuyVegetables() {
 
         {/* Vegetables Grid */}
         <Grid container spacing={3} sx={{ mb: 6 }}>
-          {filteredVegetables.length === 0 ? (
+          {loading ? (
+            Array.from({ length: 8 }).map((_, index) => (
+              <Grid item xs={12} sm={6} md={4} key={`skeleton-${index}`}>
+                <Card sx={{ height: '100%' }}>
+                  <Skeleton variant="rectangular" height={200} />
+                  <CardContent>
+                    <Skeleton variant="text" height={32} width="80%" />
+                    <Skeleton variant="text" height={20} width="60%" />
+                    <Skeleton variant="text" height={20} width="40%" />
+                  </CardContent>
+                  <CardActions sx={{ p: 2 }}>
+                    <Skeleton variant="rectangular" height={36} width="100%" />
+                  </CardActions>
+                </Card>
+              </Grid>
+            ))
+          ) : filteredVegetables.length === 0 ? (
             <Grid item xs={12}>
               <Alert severity="info">No vegetables found matching your criteria.</Alert>
             </Grid>
           ) : (
             filteredVegetables.map((vegetable) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={vegetable._id || vegetable.id}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={4}
+                lg={3}
+                key={vegetable._id || vegetable.id}
+                sx={{
+                  display: 'flex'
+                }}
+              >
                 <Card
                   sx={{
                     height: '100%',
+                    position: 'relative',
                     display: 'flex',
                     flexDirection: 'column',
-                    transition: 'all 0.3s',
+                    borderRadius: 2,
+                    overflow: 'hidden',
+                    boxShadow: 2,
+                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                     '&:hover': {
                       transform: 'translateY(-8px)',
                       boxShadow: 4,
                     },
+                    '&:hover img': {
+                      transform: 'scale(1.05)'
+                    }
                   }}
                 >
-                  {/* Image */}
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={vegetable.imageUrl || vegetable.image || '/images/vegetables.png'}
-                    alt={vegetable.name}
-                    sx={{
-                      bgcolor: 'grey.100',
-                      objectFit: 'cover'
-                    }}
-                  />
-                  
-                  {/* Badges */}
-                  <Box position="absolute" top={8} right={8} display="flex" gap={1}>
-                    {vegetable.discount > 0 && (
-                      <Chip
-                        label={`${vegetable.discount}% OFF`}
-                        color="error"
-                        size="small"
-                      />
-                    )}
-                    {vegetable.organic && (
-                      <Chip
-                        icon={<EcoIcon />}
-                        label="Organic"
-                        color="success"
-                        size="small"
-                      />
-                    )}
+                  <Box sx={{ position: 'relative', width: '100%', pt: '60%', bgcolor: 'grey.100' }}>
+                    <CardMedia
+                      component="img"
+                      image={vegetable.imageUrl || vegetable.image || '/images/vegetables.png'}
+                      alt={vegetable.name}
+                      sx={{
+                        position: 'absolute',
+                        inset: 0,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        transition: 'transform 0.35s ease'
+                      }}
+                    />
+
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: 12,
+                        right: 12,
+                        display: 'flex',
+                        gap: 1
+                      }}
+                    >
+                      {vegetable.discount > 0 && (
+                        <Chip
+                          label={`${vegetable.discount}% OFF`}
+                          color="error"
+                          size="small"
+                          sx={{ bgcolor: 'error.main', color: 'common.white' }}
+                        />
+                      )}
+                      {vegetable.organic && (
+                        <Chip
+                          icon={<EcoIcon />}
+                          label="Organic"
+                          color="success"
+                          size="small"
+                          sx={{ bgcolor: 'success.main', color: 'common.white' }}
+                        />
+                      )}
+                    </Box>
                   </Box>
                   
-                  <CardContent sx={{ flexGrow: 1 }}>
+                  <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 1, p: 2 }}>
                     <Typography variant="h6" component="h3" gutterBottom>
                       {vegetable.name}
                     </Typography>
@@ -335,25 +415,27 @@ function BuyVegetables() {
                     </Typography>
                     
                     {/* Rating */}
-                    <Box display="flex" alignItems="center" mb={2}>
+                    <Box display="flex" alignItems="center">
                       <Rating value={vegetable.rating} readOnly size="small" />
+                      {vegetable.reviews > 0 && (
                       <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
                         ({vegetable.reviews})
                       </Typography>
-                    </Box>
-                    
-                    {/* Farmer Info */}
-                    <Box display="flex" alignItems="center" mb={2}>
-                      <Avatar sx={{ width: 24, height: 24, mr: 1 }}>
-                        <VerifiedIcon sx={{ fontSize: 16 }} />
-                      </Avatar>
-                      <Typography variant="caption" color="text.secondary">
-                        {vegetable.farmer?.name || 'Local Farmer'} • {vegetable.farmer?.location || 'Local'}
-                      </Typography>
-                    </Box>
+                    )}
+                  </Box>
+
+                  {/* Farmer Info */}
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <Avatar sx={{ width: 28, height: 28 }}>
+                      <VerifiedIcon sx={{ fontSize: 18 }} />
+                    </Avatar>
+                    <Typography variant="caption" color="text.secondary">
+                      {vegetable.farmer?.name || 'Local Farmer'} • {vegetable.farmer?.location || 'Local'}
+                    </Typography>
+                  </Box>
                     
                     {/* Price */}
-                    <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+                    <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
                       <Box>
                         {vegetable.discount > 0 && (
                           <Typography
@@ -378,12 +460,16 @@ function BuyVegetables() {
                     <Button
                       fullWidth
                       variant="contained"
-                      color={addedToCart[vegetable.id || vegetable._id] ? "success" : "primary"}
-                      startIcon={addedToCart[vegetable.id || vegetable._id] ? <DoneIcon /> : <AddIcon />}
+                      color={addedToCart[vegetable._id || vegetable.id] ? 'success' : 'primary'}
+                      startIcon={addedToCart[vegetable._id || vegetable.id] ? <DoneIcon /> : <AddIcon />}
                       onClick={() => handleAddToCart(vegetable)}
                       disabled={vegetable.stock !== undefined && vegetable.stock <= 0}
                     >
-                      {addedToCart[vegetable.id || vegetable._id] ? 'Added!' : (vegetable.stock === undefined || vegetable.stock > 0) ? 'Add to Cart' : 'Out of Stock'}
+                      {addedToCart[vegetable._id || vegetable.id]
+                        ? 'Added!'
+                        : vegetable.stock === undefined || vegetable.stock > 0
+                          ? 'Add to Cart'
+                          : 'Out of Stock'}
                     </Button>
                   </CardActions>
                 </Card>
@@ -396,7 +482,7 @@ function BuyVegetables() {
         <Paper elevation={3} sx={{ p: 6, mb: 6, textAlign: 'center', background: 'linear-gradient(135deg, #e8f5e9, #f1f8e9)' }}>
           <Box maxWidth="md" mx="auto">
             <Avatar
-              sx={{ width: 80, height: 80, mx: 'auto', mb: 3, bgcolor: 'primary.main' }}
+              sx={{ width: 64, height: 64, mx: 'auto', mb: 2, bgcolor: 'primary.main' }}
             >
               <span style={{ fontSize: '2.5rem' }}>🌾</span>
             </Avatar>
@@ -437,7 +523,7 @@ function BuyVegetables() {
         <Grid container spacing={4}>
           <Grid item xs={12} md={4}>
             <Paper elevation={2} sx={{ p: 4, textAlign: 'center' }}>
-              <Avatar sx={{ width: 60, height: 60, mx: 'auto', mb: 2, bgcolor: 'secondary.light' }}>
+              <Avatar sx={{ width: 48, height: 48, mx: 'auto', mb: 2, bgcolor: 'secondary.light' }}>
                 <LocalShippingIcon />
               </Avatar>
               <Typography variant="h6" gutterBottom>
@@ -451,7 +537,7 @@ function BuyVegetables() {
           
           <Grid item xs={12} md={4}>
             <Paper elevation={2} sx={{ p: 4, textAlign: 'center' }}>
-              <Avatar sx={{ width: 60, height: 60, mx: 'auto', mb: 2, bgcolor: 'success.light' }}>
+              <Avatar sx={{ width: 48, height: 48, mx: 'auto', mb: 2, bgcolor: 'success.light' }}>
                 <EcoIcon />
               </Avatar>
               <Typography variant="h6" gutterBottom>
@@ -465,7 +551,7 @@ function BuyVegetables() {
           
           <Grid item xs={12} md={4}>
             <Paper elevation={2} sx={{ p: 4, textAlign: 'center' }}>
-              <Avatar sx={{ width: 60, height: 60, mx: 'auto', mb: 2, bgcolor: 'warning.light' }}>
+              <Avatar sx={{ width: 48, height: 48, mx: 'auto', mb: 2, bgcolor: 'warning.light' }}>
                 <VerifiedIcon />
               </Avatar>
               <Typography variant="h6" gutterBottom>

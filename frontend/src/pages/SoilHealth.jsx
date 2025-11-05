@@ -310,7 +310,7 @@ function SoilHealth() {
         </Box>
 
         {/* Input Form */}
-        <Paper elevation={6} sx={{ p: 4, mb: 4, borderRadius: 4 }}>
+        <Paper elevation={3} sx={{ p: 3, mb: 3, borderRadius: 2 }}>
           <Typography variant="h5" fontWeight="semibold" textAlign="center" gutterBottom>
             Enter Soil Test Results 🌍
           </Typography>
@@ -368,7 +368,7 @@ function SoilHealth() {
           <Fade in>
             <Box>
               {/* Overall Health Score */}
-              <Paper elevation={6} sx={{ p: 4, mb: 4, borderRadius: 4 }}>
+              <Paper elevation={3} sx={{ p: 3, mb: 3, borderRadius: 2 }}>
                 <Box textAlign="center" mb={4}>
                   <Typography variant="h4" fontWeight="bold" gutterBottom>
                     Soil Health Analysis
@@ -378,13 +378,13 @@ function SoilHealth() {
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: 2,
-                      p: 3,
-                      borderRadius: 3,
+                      p: 2.5,
+                      borderRadius: 2,
                       bgcolor: getHealthBg(analysisResult.score),
                       mt: 2,
                     }}
                   >
-                    <Typography variant="h2">🌱</Typography>
+                    <Typography variant="h3">🌱</Typography>
                     <Box>
                       <Typography variant="h3" fontWeight="bold" color={getHealthColor(analysisResult.score)}>
                         {analysisResult.score}/100
@@ -407,13 +407,13 @@ function SoilHealth() {
                       <Card
                         sx={{
                           bgcolor: `${indicator.color}.light`,
-                          borderRadius: 3,
+                          borderRadius: 2,
                           textAlign: 'center',
-                          p: 3,
+                          p: 2.5,
                           height: '100%',
                         }}
                       >
-                        <Typography variant="h3" sx={{ mb: 2 }}>{indicator.icon}</Typography>
+                        <Typography variant="h4" sx={{ mb: 1 }}>{indicator.icon}</Typography>
                         <Typography variant="h6" fontWeight="semibold" gutterBottom>
                           {indicator.title}
                         </Typography>
@@ -477,7 +477,7 @@ function SoilHealth() {
               </Grid>
 
               {/* Suitable Crops */}
-              <Paper elevation={6} sx={{ p: 4, borderRadius: 4 }}>
+              <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
                 <Typography variant="h5" fontWeight="bold" textAlign="center" gutterBottom>
                   Recommended Crops 🌾
                 </Typography>
@@ -487,17 +487,18 @@ function SoilHealth() {
                       <Card
                         sx={{
                           bgcolor: 'primary.light',
-                          borderRadius: 3,
+                          borderRadius: 2,
                           textAlign: 'center',
+                          height: '100%',
                           transition: 'all 0.3s',
                           '&:hover': {
                             transform: 'translateY(-4px)',
-                            boxShadow: 6,
+                            boxShadow: 4,
                           },
                         }}
                       >
                         <CardContent>
-                          <Typography variant="h3" sx={{ mb: 2 }}>{crop.icon}</Typography>
+                          <Typography variant="h4" sx={{ mb: 1 }}>{crop.icon}</Typography>
                           <Typography variant="h6" fontWeight="semibold" gutterBottom>
                             {crop.name}
                           </Typography>

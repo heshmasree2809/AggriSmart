@@ -109,12 +109,14 @@ function SeasonalCrop() {
                       color="primary"
                       onClick={() => setSelectedSeason(season.value)}
                       sx={{
-                        py: 3,
+                        py: 2,
+                        px: 1,
                         flexDirection: 'column',
-                        gap: 1,
+                        gap: 0.5,
+                        minHeight: 100
                       }}
                     >
-                      <Typography variant="h4">{season.icon}</Typography>
+                      <Typography variant="h5">{season.icon}</Typography>
                       <Typography variant="body1" fontWeight="medium">
                         {season.name}
                       </Typography>
@@ -139,12 +141,14 @@ function SeasonalCrop() {
                       color="primary"
                       onClick={() => setSelectedRegion(region.value)}
                       sx={{
-                        py: 3,
+                        py: 2,
+                        px: 1,
                         flexDirection: 'column',
-                        gap: 1,
+                        gap: 0.5,
+                        minHeight: 100
                       }}
                     >
-                      <Typography variant="h4">{region.icon}</Typography>
+                      <Typography variant="h5">{region.icon}</Typography>
                       <Typography variant="body2" fontWeight="medium">
                         {region.name}
                       </Typography>
@@ -158,28 +162,29 @@ function SeasonalCrop() {
 
         {/* Crop Recommendations */}
         {currentRecommendations.length > 0 && (
-          <Paper elevation={6} sx={{ p: 4, mb: 4, borderRadius: 4 }}>
+          <Paper elevation={3} sx={{ p: 3, mb: 3, borderRadius: 2, bgcolor: 'background.paper' }}>
             <Typography variant="h5" fontWeight="bold" textAlign="center" gutterBottom>
               Recommended Crops for {seasons.find(s => s.value === selectedSeason)?.name} in {regions.find(r => r.value === selectedRegion)?.name}
             </Typography>
             
             <Grid container spacing={3} sx={{ mt: 2 }}>
               {currentRecommendations.map((crop, index) => (
-                <Grid item xs={12} sm={6} md={3} key={index}>
+                <Grid item xs={12} sm={6} md={6} lg={3} key={index}>
                   <Card
                     sx={{
                       bgcolor: 'primary.light',
-                      borderRadius: 3,
+                      borderRadius: 2,
                       textAlign: 'center',
                       transition: 'all 0.3s',
+                      height: '100%',
                       '&:hover': {
                         transform: 'translateY(-4px)',
-                        boxShadow: 6,
+                        boxShadow: 4,
                       },
                     }}
                   >
                     <CardContent>
-                      <Typography variant="h2" sx={{ mb: 2 }}>
+                      <Typography variant="h4" sx={{ mb: 1 }}>
                         {crop.icon}
                       </Typography>
                       <Typography variant="h6" fontWeight="semibold" gutterBottom>

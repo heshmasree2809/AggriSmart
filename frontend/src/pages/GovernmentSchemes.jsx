@@ -185,16 +185,17 @@ function GovernmentSchemes() {
                     </Grid>
                 ) : (
                     filteredSchemes.map((scheme) => (
-                        <Grid item xs={12} md={6} lg={4} key={scheme._id || scheme.id}>
+                        <Grid item xs={12} sm={6} md={4} key={scheme._id || scheme.id}>
                             <Card 
                                 sx={{ 
                                     height: '100%', 
                                     display: 'flex', 
                                     flexDirection: 'column',
                                     transition: 'all 0.3s',
+                                    borderRadius: 2,
                                     '&:hover': {
-                                        transform: 'translateY(-8px)',
-                                        boxShadow: 4
+                                        transform: 'translateY(-4px)',
+                                        boxShadow: 3
                                     }
                                 }}
                             >
@@ -327,7 +328,7 @@ function GovernmentSchemes() {
             </Grid>
 
             {/* Application Process Section */}
-            <Paper elevation={3} sx={{ p: 4, mt: 6 }}>
+            <Paper elevation={2} sx={{ p: 3, mt: 4, borderRadius: 2 }}>
                 <Typography variant="h5" fontWeight="bold" gutterBottom>
                     <AssignmentIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
                     How to Apply for Government Schemes

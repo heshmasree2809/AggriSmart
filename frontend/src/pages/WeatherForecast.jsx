@@ -67,6 +67,46 @@ function parseForecastList(list) {
   return { labels, maxTemps };
 }
 
+const buildSampleForecast = () => {
+  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  return days.map((day) => {
+    const high = Math.round(26 + Math.random() * 8);
+    const low = Math.round(high - (4 + Math.random() * 4));
+    const rain = Math.round(Math.random() * 80);
+    const icons = ['☀️', '🌦️', '⛅', '🌩️', '🌧️'];
+    const conditions = ['Sunny', 'Light showers', 'Partly cloudy', 'Thunderstorms', 'Overcast'];
+    const index = Math.floor(Math.random() * icons.length);
+    return {
+      day,
+      icon: icons[index],
+      high,
+      low,
+      condition: conditions[index],
+      rain
+    };
+  });
+};
+
+const normalizeForecast = (forecast = []) => {
+  if (!Array.isArray(forecast) || forecast.length === 0) return [];
+
+  return forecast.slice(0, 7).map((item) => {
+    const date = item.date ? new Date(item.date) : null;
+    const label = date
+      ? date.toLocaleDateString(undefined, { weekday: 'short' })
+      : item.day || 'Day';
+
+    return {
+      day: label,
+      icon: item.icon || '🌤️',
+      high: Math.round(item.tempMax ?? item.high ?? item.temperature ?? 30),
+      low: Math.round(item.tempMin ?? item.low ?? Math.max((item.tempMax ?? 30) - 6, 20)),
+      condition: item.description || item.condition || 'Pleasant',
+      rain: Math.round(item.precipitationProbability ?? item.rain ?? 30)
+    };
+  });
+};
+
 export default function WeatherForecast() {
   const { isAuthenticated } = useAuth();
   const [weatherData, setWeatherData] = useState(null);
@@ -76,62 +116,112 @@ export default function WeatherForecast() {
   const { showSuccess, showInfo, showError } = useNotification();
 
   // Load weather data from API
-  const loadWeatherData = async () => {
+  const loadWeatherData = React.useCallback(async ({ locationOverride, coordinates } = {}) => {
     setLoading(true);
     try {
       if (!isAuthenticated()) {
-        // If not authenticated, use mock data or show message
+        // If not authenticated, use rich mock data
+        const temp = Math.round(26 + Math.random() * 8);
+        const humidity = Math.round(55 + Math.random() * 35);
+        const wind = Math.round(6 + Math.random() * 10);
+        const uv = Math.round(3 + Math.random() * 7);
         setWeatherData({
           current: {
-            temp: 28,
+            temp,
             condition: 'Partly Cloudy',
-            humidity: 65,
-            wind: 12,
-            feelsLike: 30
+            humidity,
+            wind,
+            feelsLike: Math.round(temp + Math.random() * 3),
+            uvIndex: uv,
+            icon: '03d'
           },
-          forecast: []
+          forecast: buildSampleForecast()
         });
         setLoading(false);
         return;
       }
-      
-      const response = await api.get('/weather/forecast');
-      if (response && response.success) {
-        const weather = response.data;
-        setWeatherData({
-          current: weather.current || {
-            temp: weather.temp || 28,
-            condition: weather.condition || 'Sunny',
-            humidity: 65,
-            wind: 12,
-            feelsLike: 30
-          },
-          forecast: weather.forecast || []
-        });
-        showInfo('Weather data updated');
+
+      const params = {};
+      const targetLocation = locationOverride || location;
+      if (targetLocation) params.location = targetLocation;
+      if (coordinates?.lat && coordinates?.lon) {
+        params.lat = coordinates.lat;
+        params.lon = coordinates.lon;
       }
+
+      const response = await api.get('/weather/forecast', params);
+
+      if (response && response.success) {
+        const payload = response.weather || response.data?.weather || response.data;
+        if (payload) {
+          const current = payload.current || payload.data?.current || {
+            temp: payload.temperature || 28,
+            condition: payload.condition || 'Sunny',
+            humidity: payload.humidity || 65,
+            wind: payload.windSpeed || payload.wind || 10,
+            feelsLike: payload.feelsLike || 30,
+            uvIndex: payload.uvIndex || 6,
+            icon: payload.icon || '01d'
+          };
+          const forecastData = normalizeForecast(payload.forecast || payload.data?.forecast);
+
+          setWeatherData({
+            current: {
+              temp: current.temperature ?? current.temp ?? 28,
+              condition: current.description || current.condition || 'Sunny',
+              humidity: current.humidity ?? 65,
+              wind: current.windSpeed ?? current.wind ?? 10,
+              feelsLike: current.feelsLike ?? current.temp ?? 30,
+              uvIndex: current.uvIndex ?? payload.agricultural?.uvIndex ?? 6,
+              icon: current.icon || '01d'
+            },
+            forecast: forecastData.length > 0 ? forecastData : buildSampleForecast()
+          });
+          showInfo('Weather data updated');
+          return;
+        }
+      }
+
+      // If response not successful, fall back
+      const temp = Math.round(26 + Math.random() * 8);
+      setWeatherData({
+        current: {
+          temp,
+          condition: 'Partly Cloudy',
+          humidity: Math.round(55 + Math.random() * 35),
+          wind: Math.round(6 + Math.random() * 10),
+          feelsLike: Math.round(temp + Math.random() * 3),
+          uvIndex: Math.round(3 + Math.random() * 7),
+          icon: '03d'
+        },
+        forecast: buildSampleForecast()
+      });
+      showInfo('Showing sample weather forecast');
     } catch (error) {
       console.error('Error fetching weather data:', error);
       // Use fallback data
+      const temp = Math.round(26 + Math.random() * 8);
       setWeatherData({
         current: {
-          temp: 28,
+          temp,
           condition: 'Partly Cloudy',
-          humidity: 65,
-          wind: 12,
-          feelsLike: 30
+          humidity: Math.round(55 + Math.random() * 35),
+          wind: Math.round(6 + Math.random() * 10),
+          feelsLike: Math.round(temp + Math.random() * 3),
+          uvIndex: Math.round(3 + Math.random() * 7),
+          icon: '03d'
         },
-        forecast: []
+        forecast: buildSampleForecast()
       });
       showError('Failed to load weather data from server');
     } finally {
       setLoading(false);
     }
-  };
+  }, [isAuthenticated, location, showError, showInfo]);
 
   useEffect(() => {
     loadWeatherData();
-  }, []);
+  }, [loadWeatherData]);
 
   // Auto-refresh every 30 seconds
   useEffect(() => {
@@ -139,7 +229,7 @@ export default function WeatherForecast() {
       loadWeatherData();
     }, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [loadWeatherData]);
 
   // Get current location
   const getCurrentLocation = () => {
@@ -148,7 +238,13 @@ export default function WeatherForecast() {
         (position) => {
           setLocation('Current Location');
           showSuccess('Location updated successfully');
-          loadWeatherData();
+          loadWeatherData({
+            locationOverride: 'Current Location',
+            coordinates: {
+              lat: position.coords.latitude,
+              lon: position.coords.longitude
+            }
+          });
         },
         (error) => {
           showError('Unable to get location');
@@ -163,7 +259,7 @@ export default function WeatherForecast() {
       setLocation(searchLocation);
       setSearchLocation('');
       showSuccess(`Weather updated for ${searchLocation}`);
-      loadWeatherData();
+      loadWeatherData({ locationOverride: searchLocation });
     }
   };
 
@@ -177,13 +273,16 @@ export default function WeatherForecast() {
     );
   }
 
+  const rawWind = weatherData?.current?.wind ?? weatherData?.current?.windSpeed ?? 0;
+  const windSpeedValue = rawWind <= 40 ? rawWind : rawWind * 3.6;
+
   const currentWeather = {
     temperature: weatherData?.current?.temp || 28,
     condition: weatherData?.current?.condition || 'Partly Cloudy',
     humidity: weatherData?.current?.humidity || 65,
-    windSpeed: weatherData?.current?.wind || 12,
+    windSpeed: Math.round(windSpeedValue * 10) / 10,
     precipitation: 30,
-    uvIndex: 7,
+    uvIndex: weatherData?.current?.uvIndex || 7,
     location: location,
     lastUpdated: new Date().toLocaleString(),
     icon: weatherData?.current?.icon || '',
@@ -220,7 +319,7 @@ export default function WeatherForecast() {
               <IconButton onClick={getCurrentLocation} color="primary">
                 <MyLocation />
               </IconButton>
-              <IconButton onClick={loadWeatherData} color="primary">
+              <IconButton onClick={() => loadWeatherData()} color="primary">
                 <Refresh />
               </IconButton>
             </Box>

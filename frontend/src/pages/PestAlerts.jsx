@@ -52,6 +52,7 @@ import {
 } from '@mui/icons-material';
 import api from '../services/api.service';
 import cropsDataJSON from '../data/crops.json';
+import { pestsData as localPests } from '../storage/pests';
 
 const pestCategories = ['All', 'Insects', 'Diseases', 'Nematodes', 'Weeds'];
 const severityLevels = [
@@ -80,10 +81,15 @@ function PestAlerts() {
         const response = await api.get('/info/pests');
         if (response && response.success) {
           const pests = Array.isArray(response.data) ? response.data : [];
-          setPestsData(pests);
+          if (pests.length > 0) {
+            setPestsData(pests);
+            return;
+          }
         }
+        setPestsData(localPests || []);
       } catch (error) {
         console.error('Error fetching pests:', error);
+        setPestsData(localPests || []);
       } finally {
         setLoading(false);
       }
@@ -115,7 +121,7 @@ function PestAlerts() {
     }
     
     return filtered;
-  }, [selectedSeverity, selectedCrop, searchTerm]);
+  }, [selectedSeverity, selectedCrop, searchTerm, pestsData]);
 
   // Get severity color for MUI
   const getSeverityColor = (severity) => {
@@ -127,10 +133,10 @@ function PestAlerts() {
   const affectedCrops = useMemo(() => {
     const crops = new Set(['All']);
     pestsData.forEach(pest => {
-      pest.affectedCrops.forEach(crop => crops.add(crop));
+      (pest.affectedCrops || []).forEach(crop => crops.add(crop));
     });
     return Array.from(crops);
-  }, []);
+  }, [pestsData]);
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -175,16 +181,17 @@ function PestAlerts() {
           {/* Severity and Crop Filters */}
           <Grid container spacing={2} sx={{ mb: 3 }}>
             <Grid item xs={12} md={6}>
-              <Paper elevation={1} sx={{ p: 2 }}>
-                <Typography variant="subtitle2" gutterBottom>
+              <Paper elevation={2} sx={{ p: 3 }}>
+                <Typography variant="h6" fontWeight="bold" gutterBottom>
                   Filter by Severity
                 </Typography>
-                <Box display="flex" gap={1} flexWrap="wrap">
+                <Box display="flex" gap={1.5} flexWrap="wrap" mt={2}>
                   <Chip
                     label="All"
                     onClick={() => setSelectedSeverity('All')}
                     color={selectedSeverity === 'All' ? 'primary' : 'default'}
                     variant={selectedSeverity === 'All' ? 'filled' : 'outlined'}
+                    sx={{ fontSize: '0.95rem', py: 2.5, px: 1 }}
                   />
                   {severityLevels.map((level) => (
                     <Chip
@@ -194,6 +201,7 @@ function PestAlerts() {
                       color={selectedSeverity === level.level ? 'primary' : 'default'}
                       variant={selectedSeverity === level.level ? 'filled' : 'outlined'}
                       icon={<Badge color={level.color} variant="dot"><span /></Badge>}
+                      sx={{ fontSize: '0.95rem', py: 2.5, px: 1 }}
                     />
                   ))}
                 </Box>
@@ -249,8 +257,8 @@ function PestAlerts() {
                       {/* Header with Severity */}
                       <Box display="flex" justifyContent="space-between" alignItems="start" mb={3}>
                         <Box display="flex" gap={2}>
-                          <Avatar sx={{ bgcolor: 'error.light', width: 56, height: 56 }}>
-                            <BugReportIcon fontSize="large" />
+                          <Avatar sx={{ bgcolor: 'error.light', width: 48, height: 48 }}>
+                            <BugReportIcon />
                           </Avatar>
                           <Box>
                             <Typography variant="h5" fontWeight="bold" gutterBottom>
@@ -561,9 +569,9 @@ function PestAlerts() {
       )}
 
       {/* Emergency Contact Section */}
-      <Paper elevation={3} sx={{ p: 4, mt: 6, bgcolor: 'error.50', border: 2, borderColor: 'error.200' }}>
+      <Paper elevation={3} sx={{ p: 3, mt: 4, bgcolor: 'error.50', border: 2, borderColor: 'error.200' }}>
         <Box textAlign="center">
-          <Avatar sx={{ width: 80, height: 80, mx: 'auto', mb: 3, bgcolor: 'error.main' }}>
+          <Avatar sx={{ width: 60, height: 60, mx: 'auto', mb: 2, bgcolor: 'error.main' }}>
             <ReportIcon fontSize="large" />
           </Avatar>
           <Typography variant="h5" fontWeight="bold" gutterBottom>

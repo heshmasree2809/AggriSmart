@@ -28,7 +28,8 @@ import {
   Select,
   MenuItem,
   TextField,
-  InputAdornment
+  InputAdornment,
+  CardActions
 } from '@mui/material';
 import {
   Agriculture as AgricultureIcon,
@@ -42,11 +43,16 @@ import {
   Info as InfoIcon,
   ArrowBack as ArrowBackIcon,
   Calculate as CalculateIcon,
-  Grass as GrassIcon
+  Grass as GrassIcon,
+  AddShoppingCart as AddShoppingCartIcon
 } from '@mui/icons-material';
 import { formatCurrency } from '../utils/helpers';
 import api from '../services/api.service';
 import cropsDataJSON from '../data/crops.json';
+import { fertilizersData as localFertilizers } from '../storage/fertilizers';
+import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import { useNotification } from '../components/NotificationSystem';
 
 const fertilizerCategories = ['All', 'Nitrogenous', 'Phosphatic', 'Potassic', 'Complex', 'Micronutrient', 'Organic'];
 const applicationMethods = ['Broadcast', 'Band Placement', 'Foliar Spray', 'Soil Application', 'Fertigation'];
@@ -62,6 +68,11 @@ function FertilizerInfo() {
   const [expandedAccordion, setExpandedAccordion] = useState(false);
   const [fertilizersData, setFertilizersData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [addedToCart, setAddedToCart] = useState({});
+
+  const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
+  const { showSuccess, showWarning } = useNotification();
 
   // Fetch fertilizers from API
   useEffect(() => {
@@ -72,10 +83,15 @@ function FertilizerInfo() {
         if (response && response.success) {
           // Server returns { success: true, data: [...] }
           const fertilizers = Array.isArray(response.data) ? response.data : [];
-          setFertilizersData(fertilizers);
+          if (fertilizers.length > 0) {
+            setFertilizersData(fertilizers);
+            return;
+          }
         }
+        setFertilizersData(localFertilizers || []);
       } catch (error) {
         console.error('Error fetching fertilizers:', error);
+        setFertilizersData(localFertilizers || []);
       } finally {
         setLoading(false);
       }
@@ -97,7 +113,7 @@ function FertilizerInfo() {
   const filteredFertilizers = useMemo(() => {
     if (selectedCategory === 'All') return fertilizersData;
     return fertilizersData.filter(f => f.type === selectedCategory);
-  }, [selectedCategory]);
+  }, [selectedCategory, fertilizersData]);
 
   // Calculate fertilizer requirement
   const calculateRequirement = () => {
@@ -117,6 +133,34 @@ function FertilizerInfo() {
   };
 
   const requirement = calculateRequirement();
+
+  const handleAddToCart = (fertilizer) => {
+    if (!isAuthenticated()) {
+      showWarning('Please login to add items to cart');
+      return;
+    }
+
+    const itemId = fertilizer._id || fertilizer.id;
+    const price = Number(fertilizer.price ?? 0);
+
+    addToCart({
+      id: itemId,
+      name: fertilizer.name,
+      price,
+      unit: fertilizer.unit || 'pack',
+      category: fertilizer.type || 'Fertilizer',
+      description: fertilizer.description,
+      imageUrl: fertilizer.imageUrl || '/images/fertilizer.png',
+      type: 'Fertilizer'
+    });
+
+    setAddedToCart(prev => ({ ...prev, [itemId]: true }));
+    showSuccess(`${fertilizer.name} added to cart`);
+
+    setTimeout(() => {
+      setAddedToCart(prev => ({ ...prev, [itemId]: false }));
+    }, 1500);
+  };
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -169,9 +213,11 @@ function FertilizerInfo() {
               <Typography>No fertilizers found.</Typography>
             </Grid>
           ) : (
-            filteredFertilizers.map((fertilizer) => (
-            <Grid item xs={12} md={6} lg={4} key={fertilizer.id}>
-              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            filteredFertilizers.map((fertilizer) => {
+            const fertilizerId = fertilizer._id || fertilizer.id;
+            return (
+            <Grid item xs={12} sm={6} md={6} key={fertilizerId} sx={{ display: 'flex' }}>
+              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', minHeight: 420 }}>
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Box display="flex" justifyContent="space-between" alignItems="start" mb={2}>
                     <Typography variant="h6" component="h3" fontWeight="bold">
@@ -258,9 +304,21 @@ function FertilizerInfo() {
                     </Box>
                   )}
                 </CardContent>
+                <CardActions sx={{ px: 3, pb: 3 }}>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    color={addedToCart[fertilizerId] ? 'success' : 'primary'}
+                    startIcon={<AddShoppingCartIcon />}
+                    onClick={() => handleAddToCart(fertilizer)}
+                  >
+                    {addedToCart[fertilizerId] ? 'Added!' : 'Add to Cart'}
+                  </Button>
+                </CardActions>
               </Card>
             </Grid>
-            ))
+            );
+            })
           )}
         </Grid>
       )}
