@@ -1,14 +1,11 @@
 {
   "name": "agrismart-platform",
   "version": "1.0.0",
-  "description": "Comprehensive MERN-stack agriculture platform with AI-driven agronomic advice",
   "private": true,
   "scripts": {
     "install": "cd backend && npm install && cd ../frontend && npm install",
     "build": "cd frontend && npm run build",
-    "start": "cd backend && npm start",
-    "seed": "cd backend && npm run seed",
-    "test": "echo \"No tests configured\" && exit 0"
+    "start": "cd backend && npm start"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
