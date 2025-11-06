@@ -48,7 +48,7 @@ import {
   Refresh,
   Info
 } from '@mui/icons-material';
-import Eco from '@mui/icons-material/Eco';
+import Nature from '@mui/icons-material/Nature';
 import { motion, AnimatePresence } from 'framer-motion';
 import { diseaseAPI } from '../services/api';
 import toast from 'react-hot-toast';
