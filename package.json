@@ -4,28 +4,15 @@
   "description": "Comprehensive MERN-stack agriculture platform with AI-driven agronomic advice",
   "private": true,
   "scripts": {
-    "install": "npm run install:backend && npm run install:frontend",
+    "install": "npm run install:backend && npm run install:frontend && npm run prebuild",
     "install:backend": "cd ./backend && npm install",
     "install:frontend": "cd ./frontend && npm install --include=dev",
-    "postinstall": "cd ./frontend && npm install --include=dev",
-    "build": "cd ./frontend && npx vite build",
+    "prebuild": "cd ./frontend && npx vite build",
+    "build": "echo \"✅ Build already completed during install phase\"",
     "start": "cd ./backend && npm start",
     "seed": "cd ./backend && npm run seed",
     "test": "echo \"No tests configured\" && exit 0"
   },
-  "keywords": [
-    "agriculture",
-    "farming",
-    "mern-stack",
-    "ai",
-    "disease-detection",
-    "marketplace",
-    "weather",
-    "soil-health",
-    "crop-recommendation"
-  ],
-  "author": "AgriSmart Team",
-  "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2"
   },
