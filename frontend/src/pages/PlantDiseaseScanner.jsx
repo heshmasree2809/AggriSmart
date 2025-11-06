@@ -38,7 +38,6 @@ import {
   Error as ErrorIcon,
   ExpandMore,
   LocalHospital,
-  Eco,
   Science,
   Timeline,
   WaterDrop,
@@ -49,6 +48,7 @@ import {
   Refresh,
   Info
 } from '@mui/icons-material';
+import Eco from '@mui/icons-material/Eco';
 import { motion, AnimatePresence } from 'framer-motion';
 import { diseaseAPI } from '../services/api';
 import toast from 'react-hot-toast';
