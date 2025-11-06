@@ -6,8 +6,8 @@
   "scripts": {
     "install": "npm run install:backend && npm run install:frontend",
     "install:backend": "cd ./backend && npm install",
-    "install:frontend": "cd ./frontend && npm install",
-    "build": "cd ./frontend && npm run build",
+    "install:frontend": "cd ./frontend && npm install --include=dev",
+    "build": "cd ./frontend && npx vite build",
     "start": "cd ./backend && npm start",
     "seed": "cd ./backend && npm run seed",
     "test": "echo \"No tests configured\" && exit 0"
