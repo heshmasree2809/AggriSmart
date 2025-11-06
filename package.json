@@ -4,13 +4,10 @@
   "description": "Comprehensive MERN-stack agriculture platform with AI-driven agronomic advice",
   "private": true,
   "scripts": {
-    "install": "npm run install:backend && npm run install:frontend && npm run prebuild",
-    "install:backend": "cd ./backend && npm install",
-    "install:frontend": "cd ./frontend && npm install --include=dev",
-    "prebuild": "cd ./frontend && npx vite build",
-    "build": "echo \"✅ Build already completed during install phase\"",
-    "start": "cd ./backend && npm start",
-    "seed": "cd ./backend && npm run seed",
+    "install": "cd backend && npm install && cd ../frontend && npm install",
+    "build": "cd frontend && npm run build",
+    "start": "cd backend && npm start",
+    "seed": "cd backend && npm run seed",
     "test": "echo \"No tests configured\" && exit 0"
   },
   "devDependencies": {
